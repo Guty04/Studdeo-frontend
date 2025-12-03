@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext(null);
 
@@ -23,12 +24,31 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
+    window.location.href = '/'; // Redirigir al login
+  };
+
+  // Función para verificar si el usuario tiene un rol específico
+  const hasRole = (requiredRoles) => {
+    if (!user || !user.role) return false;
+    return requiredRoles.includes(user.role);
+  };
+
+  // Función para verificar si el usuario tiene permisos para una ruta
+  const hasAccess = (routeRoles) => {
+    // Si no hay roles requeridos, permitir acceso
+    if (!routeRoles || routeRoles.length === 0) return true;
+    // Si el usuario no está autenticado, denegar acceso
+    if (!user) return false;
+    // Verificar si el rol del usuario está en los roles permitidos
+    return hasRole(routeRoles);
   };
 
   const value = {
     user,
     login,
     logout,
+    hasRole,
+    hasAccess,
     isAuthenticated: !!user,
     loading,
   };

@@ -1,63 +1,34 @@
+import { useState } from 'react';
+import MetricsCards from '@/components/dashboard/MetricsCards';
+import SalesChart from '@/components/dashboard/SalesChart';
+
 const MetricsPage = () => {
+  // Datos simulados - En producción vendrían de una API
+  const [metricsData] = useState({
+    totalIncome: 391.92,
+    totalStudents: 4,
+    salesData: [
+      { name: 'Día 1', ventas: 10 },
+      { name: 'Día 2', ventas: 25 },
+      { name: 'Día 3', ventas: 15 },
+      { name: 'Día 4', ventas: 30 },
+      { name: 'Día 5', ventas: 20 },
+      { name: 'Día 6', ventas: 35 },
+      { name: 'Día 7', ventas: 28 },
+    ]
+  });
+
   return (
     <div className="space-y-6">
-      <h2 className="text-3xl font-bold text-gray-800 mb-6">Métricas Generales</h2>
+      <MetricsCards 
+        totalIncome={metricsData.totalIncome} 
+        totalStudents={metricsData.totalStudents}
+      />
       
-      {/* Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition flex items-center gap-4">
-          <div className="text-5xl">👨‍🎓</div>
-          <div>
-            <h3 className="text-sm text-gray-500 font-medium">Total Estudiantes</h3>
-            <p className="text-3xl font-bold text-gray-800 mt-1">0</p>
-          </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition flex items-center gap-4">
-          <div className="text-5xl">👨‍🏫</div>
-          <div>
-            <h3 className="text-sm text-gray-500 font-medium">Total Profesores</h3>
-            <p className="text-3xl font-bold text-gray-800 mt-1">0</p>
-          </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition flex items-center gap-4">
-          <div className="text-5xl">📚</div>
-          <div>
-            <h3 className="text-sm text-gray-500 font-medium">Clases Activas</h3>
-            <p className="text-3xl font-bold text-gray-800 mt-1">0</p>
-          </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition flex items-center gap-4">
-          <div className="text-5xl">✅</div>
-          <div>
-            <h3 className="text-sm text-gray-500 font-medium">Asistencia Promedio</h3>
-            <p className="text-3xl font-bold text-gray-800 mt-1">0%</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">Gráfico de Asistencia</h3>
-          <div className="h-64 flex items-center justify-center bg-gray-100 rounded text-gray-400">
-            {/* TODO: Integrar librería de gráficos como Chart.js o Recharts */}
-            <p>Aquí irá el gráfico de asistencia</p>
-          </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">Rendimiento por Clase</h3>
-          <div className="h-64 flex items-center justify-center bg-gray-100 rounded text-gray-400">
-            {/* TODO: Integrar librería de gráficos */}
-            <p>Aquí irá el gráfico de rendimiento</p>
-          </div>
-        </div>
-      </div>
+      <SalesChart data={metricsData.salesData} />
     </div>
   );
 };
 
 export default MetricsPage;
+

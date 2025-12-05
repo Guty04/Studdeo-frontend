@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Button } from './ui/button';
+import logo from '../assets/Studdeo.png';
 
 const LoginCard: React.FC = () => {
   const { login } = useAuth();
@@ -29,11 +30,11 @@ const LoginCard: React.FC = () => {
 
   return (
     <Card className="w-full max-w-md mx-auto shadow-lg border-0 bg-white">
-      <CardHeader className="text-center pt-8 pb-6">
-        <CardTitle className="text-4xl font-bold text-studdeo-violet font-league-spartan mb-2">
-          Studdeo
+      <CardHeader className="text-center pt-6 pb-4">
+        <CardTitle className="mb-1">
+          <img src={logo} alt="Studdeo logo" className="mx-auto w-36 h-auto" />
         </CardTitle>
-        <CardDescription className="text-base text-studdeo-violet font-montserrat">
+        <CardDescription className="text-2xl text-studdeo-violet font-montserrat font-bold">
           Bienvenido
         </CardDescription>
         <p className="text-sm text-gray-600 mt-2 font-montserrat">

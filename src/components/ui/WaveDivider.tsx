@@ -12,7 +12,7 @@ const WaveDivider: React.FC = () => {
     wavePathTop + "L1440,320L0,320Z";
 
   return (
-    <div className="relative w-full h-32 text-studdeo-violet -mb-1">
+    <div className="relative w-screen h-32 text-studdeo-violet -mb-1">
       <svg
         className="absolute bottom-0 left-0 w-full h-full"
         xmlns="http://www.w3.org/2000/svg"
@@ -31,7 +31,7 @@ const WaveDivider: React.FC = () => {
           d={wavePathTop}
           fill="none"
           stroke={studdeoYellowHex}
-          strokeWidth="18"         // ← controla el grosor
+          strokeWidth="34"         // ← controla el grosor
           strokeLinecap="round"
           strokeLinejoin="round"
         />

@@ -1,7 +1,7 @@
 import React from 'react';
 import LoginCard from '../components/LoginCard';
 import Footer from '../components/Footer';
-import WaveDivider from '../components/WaveDivider';
+import WaveDivider from '../components/ui/WaveDivider';
 
 const LoginPage: React.FC = () => {
   return (

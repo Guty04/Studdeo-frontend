@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader } from './ui/card';
@@ -16,12 +16,26 @@ const LoginCard: React.FC = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    const savedEmail = localStorage.getItem('login_email');
+    const savedPassword = localStorage.getItem('login_password');
+    if (savedEmail) setEmail(savedEmail);
+    if (savedPassword) setPassword(savedPassword);
+  }, []);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
     try {
       await login(email, password, rememberMe);
+      if (rememberMe) {
+        localStorage.setItem('login_email', email);
+        localStorage.setItem('login_password', password);
+      } else {
+        localStorage.removeItem('login_email');
+        localStorage.removeItem('login_password');
+      }
       navigate('/dashboard');
     } catch (error) {
       console.error('Login failed', error);

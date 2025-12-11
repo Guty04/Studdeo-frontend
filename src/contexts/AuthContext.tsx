@@ -1,10 +1,20 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
+import { jwtDecode } from 'jwt-decode';
 
 interface User {
   name: string;
   lastname: string;
   email: string;
+  role: string;
+}
+
+interface JWTPayload {
+  expire: string;
+  name: string;
+  lastname: string;
+  email: string;
+  role: string;
 }
 
 interface AuthContextType {
@@ -38,8 +48,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const token = localStorage.getItem('access_token');
     const userData = localStorage.getItem('user_data');
     if (token && userData) {
-      setUser(JSON.parse(userData));
-      setIsAuthenticated(true);
+      try {
+        // Verificar si el token ha expirado
+        const decoded = jwtDecode<JWTPayload>(token);
+        const expireDate = new Date(decoded.expire);
+        
+        if (expireDate > new Date()) {
+          setUser(JSON.parse(userData));
+          setIsAuthenticated(true);
+        } else {
+          // Token expirado, limpiar todo
+          logout();
+        }
+      } catch (error) {
+        console.error('Error al verificar token:', error);
+        logout();
+      }
     }
   }, []);
 
@@ -54,13 +78,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       formData.append('client_id', 'string');
       formData.append('client_secret', 'string');
 
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch('http://localhost:8000/auth/login', {
         method: 'POST',
         headers: {
           'accept': 'application/json',
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: formData.toString(),
+        credentials: 'include', // Para enviar/recibir cookies
       });
 
       if (!response.ok) {
@@ -70,13 +95,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       const data = await response.json();
       
-      // Decodificar el JWT para obtener los datos del usuario
-      const tokenPayload = JSON.parse(atob(data.access_token.split('.')[1]));
+      // Decodificar el JWT para obtener los datos del usuario usando jwt-decode
+      const tokenPayload = jwtDecode<JWTPayload>(data.access_token);
       
       const userData: User = {
         name: tokenPayload.name,
         lastname: tokenPayload.lastname,
         email: tokenPayload.email,
+        role: tokenPayload.role,
       };
 
       // Guardar el token y datos del usuario

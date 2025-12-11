@@ -1,10 +1,17 @@
 import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/Studdeo.png';
-import { LayoutDashboard, BookOpen, BarChart3, DollarSign } from 'lucide-react';
+import { LayoutDashboard, BookOpen, BarChart3, DollarSign, LogOut } from 'lucide-react';
 
 const SideBar: React.FC = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   const menuItems = [
     { icon: LayoutDashboard, label: 'Resumen', path: '/dashboard' },
@@ -44,7 +51,7 @@ const SideBar: React.FC = () => {
       {/* User Info Section */}
       {user && (
         <div className="p-6 border-t border-gray-200">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 mb-4">
             <div className="w-12 h-12 rounded-full bg-studdeo-violet flex items-center justify-center text-white font-bold text-lg font-montserrat">
               {user.name.charAt(0)}{user.lastname.charAt(0)}
             </div>
@@ -60,6 +67,13 @@ const SideBar: React.FC = () => {
               </p>
             </div>
           </div>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 w-full px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors font-montserrat"
+          >
+            <LogOut className="w-5 h-5" />
+            <span className="text-base">Cerrar Sesión</span>
+          </button>
         </div>
       )}
     </div>

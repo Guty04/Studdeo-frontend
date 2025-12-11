@@ -23,6 +23,7 @@ interface AuthContextType {
   logout: () => void;
   hasPermission: (action: string) => boolean;
   isAuthenticated: boolean;
+  isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -42,29 +43,40 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     // Verificar si hay un token guardado al cargar la aplicación
-    const token = localStorage.getItem('access_token');
-    const userData = localStorage.getItem('user_data');
-    if (token && userData) {
+    const token = localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
+    const userDataStr = localStorage.getItem('user_data') || sessionStorage.getItem('user_data');
+    console.log('Token from storage:', token);
+    console.log('UserData from storage:', userDataStr);
+    if (token && userDataStr) {
       try {
         // Verificar si el token ha expirado
         const decoded = jwtDecode<JWTPayload>(token);
+        console.log('Decoded token:', decoded);
         const expireDate = new Date(decoded.expire);
+        console.log('Expire date:', expireDate);
+        console.log('Current date:', new Date());
         
         if (expireDate > new Date()) {
-          setUser(JSON.parse(userData));
+          const userData = JSON.parse(userDataStr);
+          setUser(userData);
           setIsAuthenticated(true);
+          console.log('User set from storage');
         } else {
-          // Token expirado, limpiar todo
+          console.log('Token expired, logging out');
           logout();
         }
       } catch (error) {
         console.error('Error al verificar token:', error);
         logout();
       }
+    } else {
+      console.log('No token or userData in storage');
     }
+    setIsLoading(false);
   }, []);
 
   const login = async (email: string, password: string, rememberMe: boolean = false) => {
@@ -105,11 +117,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         role: tokenPayload.role,
       };
 
-      // Guardar el token y datos del usuario solo si rememberMe es true
+      // Guardar el token y datos del usuario
       if (rememberMe) {
         localStorage.setItem('access_token', data.access_token);
         localStorage.setItem('token_type', data.token_type);
         localStorage.setItem('user_data', JSON.stringify(userData));
+        console.log('Session saved to localStorage');
+      } else {
+        sessionStorage.setItem('access_token', data.access_token);
+        sessionStorage.setItem('token_type', data.token_type);
+        sessionStorage.setItem('user_data', JSON.stringify(userData));
+        console.log('Session saved to sessionStorage');
       }
 
       setUser(userData);
@@ -124,6 +142,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     localStorage.removeItem('access_token');
     localStorage.removeItem('token_type');
     localStorage.removeItem('user_data');
+    sessionStorage.removeItem('access_token');
+    sessionStorage.removeItem('token_type');
+    sessionStorage.removeItem('user_data');
     setUser(null);
     setIsAuthenticated(false);
   };
@@ -134,7 +155,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, hasPermission, isAuthenticated }}>
+    <AuthContext.Provider value={{ user, login, logout, hasPermission, isAuthenticated, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

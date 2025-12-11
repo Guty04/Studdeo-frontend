@@ -19,8 +19,14 @@ const LoginCard: React.FC = () => {
   useEffect(() => {
     const savedEmail = localStorage.getItem('login_email');
     const savedPassword = localStorage.getItem('login_password');
-    if (savedEmail) setEmail(savedEmail);
-    if (savedPassword) setPassword(savedPassword);
+    if (savedEmail) {
+      setEmail(savedEmail);
+      console.log('Loaded email from localStorage');
+    }
+    if (savedPassword) {
+      setPassword(savedPassword);
+      console.log('Loaded password from localStorage');
+    }
   }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -29,12 +35,15 @@ const LoginCard: React.FC = () => {
     setError(null);
     try {
       await login(email, password, rememberMe);
+      console.log('rememberMe:', rememberMe);
       if (rememberMe) {
         localStorage.setItem('login_email', email);
         localStorage.setItem('login_password', password);
+        console.log('Credentials saved to localStorage');
       } else {
         localStorage.removeItem('login_email');
         localStorage.removeItem('login_password');
+        console.log('Credentials removed from localStorage');
       }
       navigate('/dashboard');
     } catch (error) {

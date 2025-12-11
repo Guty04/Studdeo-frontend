@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import LoginPage from './pages/LoginPage';
-import Dashboard from './pages/Dashboard';
+import DashboardPage from './pages/DashboardPage';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -14,7 +14,7 @@ function App() {
             path="/dashboard"
             element={
               <ProtectedRoute requiredAction="read">
-                <Dashboard />
+                <DashboardPage />
               </ProtectedRoute>
             }
           />

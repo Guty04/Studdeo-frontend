@@ -33,13 +33,21 @@ const Footer: React.FC = () => {
           </div>
           <div className="text-center md:text-center text-base">
             <h3 className="text-lg font-bold text-studdeo-yellow mb-4 font-league-spartan">Contacto</h3>
-            <p className="text-base text-gray-200 mb-4">info@ejemplo.com</p>
+            <p className="text-base text-gray-200 mb-4">soporte@studdeo.com</p>
             <div className="flex items-center justify-center md:justify-center space-x-4">
-              <a href="#" aria-label="Facebook" className="w-10 h-10 bg-studdeo-yellow text-studdeo-violet rounded-full flex items-center justify-center hover:opacity-90 transition-opacity">
-                <i className="fab fa-facebook-f" aria-hidden="true"></i>
+              <a
+                href="https://www.instagram.com/studdeo/"
+                aria-label="Instagram"
+                className="w-10 h-10 bg-studdeo-yellow text-studdeo-violet rounded-full flex items-center justify-center hover:opacity-90 transition-opacity"
+              >
+                <i className="fab fa-instagram text-2xl" aria-hidden="true"></i>
               </a>
-              <a href="#" aria-label="Twitter" className="w-10 h-10 bg-studdeo-yellow text-studdeo-violet rounded-full flex items-center justify-center hover:opacity-90 transition-opacity">
-                <i className="fab fa-twitter" aria-hidden="true"></i>
+              <a
+                href="https://api.whatsapp.com/send/?phone=5493515592131&text=Hola%21+Vi+Studdeo+y+me+interesa+saber+qu%C3%A9+cursos+tienen+disponibles+para+mi+facultad.&type=phone_number&app_absent=0"
+                aria-label="WhatsApp"
+                className="w-10 h-10 bg-studdeo-yellow text-studdeo-violet rounded-full flex items-center justify-center hover:opacity-90 transition-opacity"
+              >
+                <i className="fab fa-whatsapp text-2xl" aria-hidden="true"></i>
               </a>
             </div>
           </div>

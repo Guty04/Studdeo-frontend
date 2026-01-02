@@ -1,13 +1,22 @@
-import React, { useState } from 'react';
-import { X, Plus, Trash2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Plus, Trash2, Search } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
+import { authenticatedFetchJSON } from '../../lib/api';
+import { API_ENDPOINTS } from '../../config/api';
 
 interface Professor {
   id: string;
   professorId: string;
   percentage: number;
+}
+
+interface ProfessorData {
+  external_reference: number;
+  name: string;
+  email: string;
+  active: boolean;
 }
 
 interface CreateUserModalProps {
@@ -20,8 +29,35 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ isOpen, onClose, onSu
   const [email, setEmail] = useState('');
   const [professors, setProfessors] = useState<Professor[]>([
     { id: '1', professorId: '', percentage: 0 },
-    { id: '2', professorId: '', percentage: 0 },
   ]);
+  const [availableProfessors, setAvailableProfessors] = useState<ProfessorData[]>([]);
+  const [isLoadingProfessors, setIsLoadingProfessors] = useState(false);
+  const [searchTerms, setSearchTerms] = useState<Record<string, string>>({});
+  const [showDropdown, setShowDropdown] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchProfessors();
+    }
+  }, [isOpen]);
+
+  const fetchProfessors = async () => {
+    setIsLoadingProfessors(true);
+    try {
+      const data = await authenticatedFetchJSON<ProfessorData[]>(
+        API_ENDPOINTS.profesores.alreadyMapped
+      );
+      setAvailableProfessors(data);
+    } catch (error) {
+      console.error('Error al obtener profesores:', error);
+      if (error instanceof Error && error.message.includes('Sesión expirada')) {
+        // El usuario será redirigido automáticamente al login por ProtectedRoute
+        window.location.reload();
+      }
+    } finally {
+      setIsLoadingProfessors(false);
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -41,13 +77,45 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ isOpen, onClose, onSu
     ));
   };
 
+  const handleSearchChange = (professorId: string, searchValue: string) => {
+    setSearchTerms({ ...searchTerms, [professorId]: searchValue });
+    setShowDropdown({ ...showDropdown, [professorId]: true });
+  };
+
+  const handleSelectProfessor = (professorId: string, selectedProf: ProfessorData) => {
+    console.log('Seleccionando profesor:', professorId, selectedProf);
+    handleProfessorChange(professorId, 'professorId', selectedProf.external_reference.toString());
+    setSearchTerms({ ...searchTerms, [professorId]: '' });
+    setShowDropdown({ ...showDropdown, [professorId]: false });
+  };
+
+  const handleClearProfessor = (professorId: string) => {
+    handleProfessorChange(professorId, 'professorId', '');
+    setSearchTerms({ ...searchTerms, [professorId]: '' });
+  };
+
+  const getFilteredProfessors = (professorId: string) => {
+    const searchTerm = searchTerms[professorId]?.toLowerCase() || '';
+    if (!searchTerm) return [];
+    
+    return availableProfessors.filter((prof) => 
+      prof.name.toLowerCase().includes(searchTerm) || 
+      prof.email.toLowerCase().includes(searchTerm)
+    );
+  };
+
+  const getSelectedProfessor = (professorId: string) => {
+    const selectedId = professors.find(p => p.id === professorId)?.professorId;
+    if (!selectedId) return null;
+    return availableProfessors.find(p => p.external_reference.toString() === selectedId) || null;
+  };
+
   const handleSubmit = () => {
     onSubmit(email, professors);
     // Reset form
     setEmail('');
     setProfessors([
       { id: '1', professorId: '', percentage: 0 },
-      { id: '2', professorId: '', percentage: 0 },
     ]);
   };
 
@@ -107,17 +175,72 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ isOpen, onClose, onSu
                   <Label htmlFor={`professor-${professor.id}`} className="text-gray-900 font-montserrat mb-2">
                     Profesor
                   </Label>
-                  <select
-                    id={`professor-${professor.id}`}
-                    value={professor.professorId}
-                    onChange={(e) => handleProfessorChange(professor.id, 'professorId', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md font-montserrat focus:outline-none focus:ring-2 focus:ring-studdeo-violet"
-                  >
-                    <option value="">Seleccionar profesor...</option>
-                    <option value="prof1">Profesor 1</option>
-                    <option value="prof2">Profesor 2</option>
-                    <option value="prof3">Profesor 3</option>
-                  </select>
+                  <div className="space-y-2">
+                    {getSelectedProfessor(professor.id) ? (
+                      <div className="flex items-center gap-2 p-3 border border-gray-300 rounded-md bg-gray-50">
+                        <div className="flex-1">
+                          <p className="font-montserrat text-sm font-medium">
+                            {getSelectedProfessor(professor.id)!.name}
+                          </p>
+                          <p className="font-montserrat text-xs text-gray-500">
+                            {getSelectedProfessor(professor.id)!.email}
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleClearProfessor(professor.id)}
+                          className="text-gray-400 hover:text-gray-600"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="relative">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 z-10" />
+                        <Input
+                          type="text"
+                          placeholder="Buscar por nombre o email..."
+                          value={searchTerms[professor.id] || ''}
+                          onChange={(e) => handleSearchChange(professor.id, e.target.value)}
+                          onFocus={() => setShowDropdown({ ...showDropdown, [professor.id]: true })}
+                          className="pl-10 font-montserrat"
+                          disabled={isLoadingProfessors}
+                        />
+                        {showDropdown[professor.id] && getFilteredProfessors(professor.id).length > 0 && (
+                          <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                            {getFilteredProfessors(professor.id).map((prof) => (
+                              <div
+                                key={prof.external_reference}
+                                onClick={() => {
+                                  console.log('Click en profesor:', prof);
+                                  handleSelectProfessor(professor.id, prof);
+                                }}
+                                onMouseDown={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                }}
+                                className="w-full px-4 py-3 text-left hover:bg-gray-100 transition-colors border-b border-gray-100 last:border-b-0 cursor-pointer"
+                              >
+                                <p className="font-montserrat text-sm font-medium text-gray-900">
+                                  {prof.name}
+                                </p>
+                                <p className="font-montserrat text-xs text-gray-500">
+                                  {prof.email}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        {showDropdown[professor.id] && searchTerms[professor.id] && getFilteredProfessors(professor.id).length === 0 && (
+                          <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg px-4 py-3">
+                            <p className="font-montserrat text-sm text-gray-500">
+                              No se encontraron profesores
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div className="col-span-5">

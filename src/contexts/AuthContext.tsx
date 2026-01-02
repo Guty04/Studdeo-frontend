@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { jwtDecode } from 'jwt-decode';
+import { API_BASE_URL, API_ENDPOINTS } from '../config/api';
 
 export interface User {
   name: string;
@@ -90,7 +91,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       formData.append('client_id', 'string');
       formData.append('client_secret', 'string');
 
-      const response = await fetch('http://localhost:8000/auth/login', {
+      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.auth.login}`, {
         method: 'POST',
         headers: {
           'accept': 'application/json',

@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
+import SalesPage from './pages/SalesPage';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -13,6 +14,14 @@ function App() {
           element={
             <ProtectedRoute requiredAction="read">
               <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/ventas"
+          element={
+            <ProtectedRoute requiredAction="read">
+              <SalesPage />
             </ProtectedRoute>
           }
         />

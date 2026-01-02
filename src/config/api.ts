@@ -17,5 +17,8 @@ export const API_ENDPOINTS = {
     base: '/profesores/',
     alreadyMapped: '/profesores/?already_mapped=true',
   },
+  sales: {
+    base: '/sales/',
+  },
   // Agregar más endpoints aquí según sea necesario
 } as const;

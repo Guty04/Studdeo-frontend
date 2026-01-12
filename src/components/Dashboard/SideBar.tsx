@@ -53,7 +53,7 @@ const SideBar: React.FC = () => {
         <div className="p-6 border-t border-gray-200">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-12 h-12 rounded-full bg-studdeo-violet flex items-center justify-center text-white font-bold text-lg font-montserrat">
-              {user.name.charAt(0)}{user.lastname.charAt(0)}
+              {user.name?.charAt(0) || ''}{user.lastname?.charAt(0) || ''}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-gray-900 font-montserrat truncate">
@@ -63,7 +63,7 @@ const SideBar: React.FC = () => {
                 {user.email}
               </p>
               <p className="text-xs text-gray-500 font-montserrat truncate">
-                <strong>Rol:</strong> {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                <strong>Rol:</strong> {user.role?.charAt(0).toUpperCase() + user.role?.slice(1) || 'N/A'}
               </p>
             </div>
           </div>

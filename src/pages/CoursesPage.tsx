@@ -15,6 +15,7 @@ interface Course {
 const CoursesPage: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -63,12 +64,22 @@ const CoursesPage: React.FC = () => {
     return { courseTitle, professorName };
   };
 
-  const getStatusBadge = () => {
-    // Por ahora retornamos "Publicado" como estado por defecto
-    const statuses = ['Publicado', 'Borrador'];
-    const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
-    return randomStatus;
+  // Función para normalizar texto (remover acentos)
+  const normalizeText = (text: string) => {
+    return text
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
   };
+
+  // Filtrar cursos por nombre con búsqueda por coincidencias parciales
+  const filteredCourses = courses.filter(course => {
+    const normalizedCourseName = normalizeText(course.name);
+    const searchTerms = normalizeText(searchQuery).trim().split(/\s+/);
+    
+    // Verificar que todos los términos de búsqueda estén presentes
+    return searchTerms.every(term => normalizedCourseName.includes(term));
+  });
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -81,9 +92,33 @@ const CoursesPage: React.FC = () => {
             <h1 className="text-4xl font-bold text-gray-900 font-montserrat mb-2">
               Mis Cursos
             </h1>
-            <p className="text-gray-600 font-montserrat">
+            <p className="text-gray-600 font-montserrat mb-4">
               Gestiona tus cursos y contenido educativo
             </p>
+            
+            {/* Search Bar */}
+            <div className="relative max-w-md">
+              <input
+                type="text"
+                placeholder="Buscar cursos por nombre..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-studdeo-violet focus:border-transparent font-montserrat"
+              />
+              <svg
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </div>
           </div>
 
           {/* Courses Grid */}
@@ -91,14 +126,15 @@ const CoursesPage: React.FC = () => {
             <div className="flex justify-center items-center h-64">
               <p className="text-gray-600 font-montserrat">Cargando cursos...</p>
             </div>
-          ) : courses.length === 0 ? (
+          ) : filteredCourses.length === 0 ? (
             <div className="flex justify-center items-center h-64">
-              <p className="text-gray-600 font-montserrat">No hay cursos disponibles</p>
+              <p className="text-gray-600 font-montserrat">
+                {searchQuery ? 'No se encontraron cursos que coincidan con tu búsqueda' : 'No hay cursos disponibles'}
+              </p>
             </div>
           ) : (
             <div className="grid gap-6">
-              {courses.map((course) => {
-                const status = getStatusBadge();
+              {filteredCourses.map((course) => {
                 const { courseTitle, professorName } = parseCourseInfo(course.name);
                 
                 return (
@@ -151,37 +187,12 @@ const CoursesPage: React.FC = () => {
                             <h2 className="text-xl font-semibold text-gray-900 font-montserrat">
                               {course.name}
                             </h2>
-                            <span
-                              className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                                status === 'Publicado'
-                                  ? 'bg-green-100 text-green-700'
-                                  : 'bg-orange-100 text-orange-700'
-                              }`}
-                            >
-                              {status}
-                            </span>
                           </div>
                           {course.description && (
                             <p className="text-sm text-gray-600 font-montserrat mb-2">
                               {course.description}
                             </p>
                           )}
-                          <div className="flex items-center text-gray-600 text-sm font-montserrat">
-                            <svg
-                              className="w-4 h-4 mr-2"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-                              />
-                            </svg>
-                            ID: {course.product_id}
-                          </div>
                         </div>
 
                         {/* Action Button */}

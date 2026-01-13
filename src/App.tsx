@@ -3,6 +3,7 @@ import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import SalesPage from './pages/SalesPage';
 import CoursesPage from './pages/CoursesPage';
+import CourseDetailPage from './pages/CourseDetailPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -33,6 +34,14 @@ function App() {
           element={
             <ProtectedRoute requiredAction="read">
               <CoursesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/cursos/:external_reference"
+          element={
+            <ProtectedRoute requiredAction="read">
+              <CourseDetailPage />
             </ProtectedRoute>
           }
         />

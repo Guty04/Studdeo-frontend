@@ -22,6 +22,8 @@ export const API_ENDPOINTS = {
   },
   courses: {
     base: '/course/',
+    lessons: (external_reference: string) => `/course/${external_reference}/lessons`,
+    students: (external_reference: string) => `/course/${external_reference}/students?course_id=${external_reference}`,
   },
   // Agregar más endpoints aquí según sea necesario
 } as const;

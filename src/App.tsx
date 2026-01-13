@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import SalesPage from './pages/SalesPage';
+import CoursesPage from './pages/CoursesPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -24,6 +25,14 @@ function App() {
           element={
             <ProtectedRoute requiredAction="read">
               <SalesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/cursos"
+          element={
+            <ProtectedRoute requiredAction="read">
+              <CoursesPage />
             </ProtectedRoute>
           }
         />

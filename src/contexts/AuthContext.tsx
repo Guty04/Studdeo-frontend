@@ -7,7 +7,7 @@ export interface User {
   name: string;
   lastname: string;
   email: string;
-  role: string;
+  role_name: string;
 }
 
 interface JWTPayload {
@@ -15,7 +15,7 @@ interface JWTPayload {
   name: string;
   lastname: string;
   email: string;
-  role: string;
+  role_name: string;
 }
 
 interface AuthContextType {
@@ -115,7 +115,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         name: tokenPayload.name,
         lastname: tokenPayload.lastname,
         email: tokenPayload.email,
-        role: tokenPayload.role,
+        role_name: tokenPayload.role_name,
       };
 
       // Guardar el token y datos del usuario

@@ -126,7 +126,7 @@ const SalesPage: React.FC = () => {
   }));
 
   return (
-    <div className="flex bg-gray-50 min-h-screen">
+    <div className="flex h-screen bg-gray-50">
       <SideBar />
       <div className="flex-1 flex flex-col">
         <main className="flex-1 overflow-y-auto p-8">

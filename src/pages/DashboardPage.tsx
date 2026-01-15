@@ -159,9 +159,7 @@ const Dashboard: React.FC = () => {
       );
       
       // Filtrar solo las promesas cumplidas y extraer sus valores
-      const successfulCourses = enrichedCourses
-        .filter((result): result is PromiseFulfilledResult<AdminCourse> => result.status === 'fulfilled')
-        .map(result => result.value);
+      const successfulCourses = enrichedCourses.flatMap(result => result.status === 'fulfilled' ? [result.value] : [])
       
       setAdminCourses(successfulCourses);
     } catch (error) {
@@ -248,7 +246,7 @@ const Dashboard: React.FC = () => {
       cutoffDate = new Date(0); // All time
     }
 
-    const salesByDate: { [key: string]: { date: string, amount: number, rawDate: Date } } = {};
+    const salesByDate: { [key: string]: { date: string, fullDate:string,amount: number, rawDate: Date } } = {};
 
     salesData.forEach((course) => {
       // Filtro por curso si está seleccionado (usando el filtro APLICADO)
@@ -292,7 +290,7 @@ const Dashboard: React.FC = () => {
   const chartData = prepareSalesChartData();
 
   // Custom tooltip para mostrar fecha completa con año
-  const CustomTooltip = ({ active, payload }: any) => {
+  const CustomTooltip = ({ active, payload }: any ) => { 
     if (active && payload && payload.length) {
       return (
         <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-lg">

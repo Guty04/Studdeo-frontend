@@ -12,9 +12,9 @@ interface DashboardHeaderProps {
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({ user }) => {
   const { user: authUser } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const isAdmin = authUser?.role?.toLowerCase() === 'administrator' || 
-                  authUser?.role?.toLowerCase() === 'administrador' || 
-                  authUser?.role?.toLowerCase() === 'admin';
+  const isAdmin = authUser?.role_name?.toLowerCase() === 'administrator' || 
+                  authUser?.role_name?.toLowerCase() === 'administrador' || 
+                  authUser?.role_name?.toLowerCase() === 'admin';
 
   const handleCreateUser = (email: string, professors: unknown[]) => {
     console.log('Creating user:', { email, professors });

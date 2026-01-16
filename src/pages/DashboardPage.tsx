@@ -71,43 +71,99 @@ const Dashboard: React.FC = () => {
   const [adminCourses, setAdminCourses] = useState<AdminCourse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingSales, setIsLoadingSales] = useState(false);
-  const [isLoadingCourses, setIsLoadingCourses] = useState(true);
+  const [isLoadingCourses, setIsLoadingCourses] = useState(false);
+  const [coursesLoaded, setCoursesLoaded] = useState(false); // Nueva bandera para saber si ya se cargaron
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'graficos' | 'cursos'>('graficos');
   
-  // Filtros seleccionados (no aplicados aún)
-  const [selectedTimeRange, setSelectedTimeRange] = useState<'7' | '30' | '90' | 'all'>('all');
-  const [selectedCourseFilter, setSelectedCourseFilter] = useState<string>('all');
-  
-  // Filtros aplicados (usados para el gráfico)
-  const [appliedTimeRange, setAppliedTimeRange] = useState<'7' | '30' | '90' | 'all'>('all');
-  const [appliedCourseFilter, setAppliedCourseFilter] = useState<string>('all');
-
-  const handleApplyFilters = () => {
-    setAppliedTimeRange(selectedTimeRange);
-    setAppliedCourseFilter(selectedCourseFilter);
-  };
+  // Filtros que se aplican automáticamente
+  const [timeRange, setTimeRange] = useState<'7' | '30' | '90' | 'all'>('all');
+  const [courseFilter, setCourseFilter] = useState<string>('all');
 
   const isAdmin = user?.role_name === 'administrator';
 
+  // Constantes de caché
+  const CACHE_DURATION = 5 * 60 * 1000; // 5 minutos en milisegundos
+  const SALES_CACHE_KEY = 'dashboard_sales_cache';
+  const COURSES_CACHE_KEY = 'dashboard_courses_cache';
+
+  // Utilidad para obtener datos del caché
+  const getCachedData = <T,>(key: string): T | null => {
+    try {
+      const cached = sessionStorage.getItem(key);
+      if (!cached) return null;
+      
+      const { data, timestamp } = JSON.parse(cached);
+      const now = Date.now();
+      
+      // Verificar si el caché es válido (no ha expirado)
+      if (now - timestamp < CACHE_DURATION) {
+        console.log(`✅ Usando datos del caché para ${key}`);
+        return data as T;
+      }
+      
+      // Caché expirado, eliminar
+      sessionStorage.removeItem(key);
+      return null;
+    } catch (error) {
+      console.error('Error al leer del caché:', error);
+      return null;
+    }
+  };
+
+  // Utilidad para guardar datos en el caché
+  const setCachedData = <T,>(key: string, data: T): void => {
+    try {
+      const cacheData = {
+        data,
+        timestamp: Date.now()
+      };
+      sessionStorage.setItem(key, JSON.stringify(cacheData));
+      console.log(`💾 Datos guardados en caché para ${key}`);
+    } catch (error) {
+      console.error('Error al guardar en caché:', error);
+    }
+  };
+
+  // Efecto para cargar datos iniciales (solo sales)
   useEffect(() => {
     if (isAdmin) {
-      fetchAdminData();
+      fetchInitialData();
     } else {
       setIsLoading(false);
-      setIsLoadingCourses(false);
     }
   }, [isAdmin]);
 
-  const fetchSalesData = async () => {
+  // Efecto para cargar cursos cuando se cambia a la tab de cursos
+  useEffect(() => {
+    if (isAdmin && activeTab === 'cursos' && !coursesLoaded) {
+      fetchCoursesData();
+    }
+  }, [isAdmin, activeTab, coursesLoaded]);
+
+  const fetchSalesData = async (forceRefresh: boolean = false) => {
+    // Intentar obtener del caché si no es refresh forzado
+    if (!forceRefresh) {
+      const cachedSales = getCachedData<CourseWithSales[]>(SALES_CACHE_KEY);
+      if (cachedSales) {
+        setSalesData(cachedSales);
+        return;
+      }
+    }
+
     setIsLoadingSales(true);
     try {
-      console.log('Fetching sales data...');
+      console.log('🌐 Obteniendo datos de ventas del backend...');
       console.log('Sales endpoint:', API_ENDPOINTS.sales.base);
       
       const sales = await authenticatedFetchJSON<CourseWithSales[]>(API_ENDPOINTS.sales.base);
       console.log('Sales data received:', sales);
-      setSalesData(sales || []);
+      
+      const salesData = sales || [];
+      setSalesData(salesData);
+      
+      // Guardar en caché
+      setCachedData(SALES_CACHE_KEY, salesData);
     } catch (error) {
       console.error('Error al obtener ventas:', error);
       setSalesData([]);
@@ -116,10 +172,22 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  const fetchCoursesData = async () => {
+  const fetchCoursesData = async (forceRefresh: boolean = false) => {
+    if (coursesLoaded && !forceRefresh) return; // Evitar cargas duplicadas
+    
+    // Intentar obtener del caché si no es refresh forzado
+    if (!forceRefresh) {
+      const cachedCourses = getCachedData<AdminCourse[]>(COURSES_CACHE_KEY);
+      if (cachedCourses) {
+        setAdminCourses(cachedCourses);
+        setCoursesLoaded(true);
+        return;
+      }
+    }
+
     setIsLoadingCourses(true);
     try {
-      console.log('Fetching courses data...');
+      console.log('🌐 Obteniendo datos de cursos del backend...');
       console.log('Courses endpoint:', API_ENDPOINTS.administrator.courses);
       
       const courses = await authenticatedFetchJSON<AdminCourse[]>(API_ENDPOINTS.administrator.courses);
@@ -164,6 +232,10 @@ const Dashboard: React.FC = () => {
         .map((result) => (result as PromiseFulfilledResult<AdminCourse>).value);
       
       setAdminCourses(successfulCourses);
+      setCoursesLoaded(true);
+      
+      // Guardar en caché
+      setCachedData(COURSES_CACHE_KEY, successfulCourses);
     } catch (error) {
       console.error('Error al obtener cursos:', error);
       // Incluso si falla la petición principal, intentamos mostrar los cursos básicos si existen
@@ -173,12 +245,12 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  const fetchAdminData = async () => {
+  const fetchInitialData = async () => {
     setIsLoading(true);
     setError(null);
     
+    // Solo cargar ventas inicialmente para mostrar la página más rápido
     await fetchSalesData();
-    await fetchCoursesData();
 
     setIsLoading(false);
   };
@@ -201,16 +273,17 @@ const Dashboard: React.FC = () => {
 
   // Cálculos de estadísticas para administrador
   const calculateAdminStats = () => {
-    // Sumar todos los calculated_total para ingresos totales
-    const totalIngresos = salesData.reduce((sum, course) => sum + course.calculated_total, 0);
+    // Sumar todos los totales de cada venta
+    const totalIngresos = salesData.reduce((sum, course) => 
+      sum + course.sales.reduce((salesSum, sale) => salesSum + sale.total, 0), 0
+    );
     
     let totalLiquidado = 0;
     let totalPendiente = 0;
 
     salesData.forEach((course) => {
       course.sales.forEach((sale) => {
-        const saleTotal = calculateSaleTotal(sale);
-        const yourIncome = saleTotal * 0.80; // 80% para el vendedor
+        const yourIncome = sale.total * 0.80; // 80% para el vendedor
         
         const liquidationInfo = calculateLiquidationDate(sale.date);
         if (liquidationInfo.isPending) {
@@ -234,25 +307,27 @@ const Dashboard: React.FC = () => {
 
   // Preparar datos para el gráfico por fecha con filtros
   const prepareSalesChartData = () => {
+    // Usar la fecha actual como referencia
     const now = new Date();
-    let cutoffDate = new Date();
+    let cutoffDate = new Date(0);
     
-    // Calcular fecha límite según el filtro de tiempo APLICADO
-    if (appliedTimeRange === '7') {
+    // Calcular fecha límite según el filtro de tiempo
+    if (timeRange === '7') {
+      cutoffDate = new Date(now);
       cutoffDate.setDate(now.getDate() - 7);
-    } else if (appliedTimeRange === '30') {
+    } else if (timeRange === '30') {
+      cutoffDate = new Date(now);
       cutoffDate.setDate(now.getDate() - 30);
-    } else if (appliedTimeRange === '90') {
+    } else if (timeRange === '90') {
+      cutoffDate = new Date(now);
       cutoffDate.setDate(now.getDate() - 90);
-    } else {
-      cutoffDate = new Date(0); // All time
     }
 
     const salesByDate: { [key: string]: { date: string, fullDate: string, amount: number, rawDate: Date } } = {};
 
     salesData.forEach((course) => {
-      // Filtro por curso si está seleccionado (usando el filtro APLICADO)
-      if (appliedCourseFilter !== 'all' && course.external_reference.toString() !== appliedCourseFilter) {
+      // Filtro por curso si está seleccionado
+      if (courseFilter !== 'all' && course.external_reference.toString() !== courseFilter) {
         return;
       }
 
@@ -267,8 +342,7 @@ const Dashboard: React.FC = () => {
         const dateKey = saleDate.toISOString().split('T')[0]; // YYYY-MM-DD
         const formattedDate = formatDateForChart(sale.date);
         const fullDate = saleDate.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
-        const saleTotal = calculateSaleTotal(sale);
-        const income = saleTotal * 0.80;
+        const income = sale.total * 0.80;
         
         if (salesByDate[dateKey]) {
           salesByDate[dateKey].amount += income;
@@ -363,7 +437,7 @@ const Dashboard: React.FC = () => {
             <div className="flex flex-col items-center justify-center h-64">
               <p className="text-red-600 font-montserrat text-lg mb-4">{error}</p>
               <button
-                onClick={fetchAdminData}
+                onClick={fetchInitialData}
                 className="px-4 py-2 bg-studdeo-violet text-white rounded-lg font-montserrat hover:bg-opacity-90"
               >
                 Reintentar
@@ -461,14 +535,14 @@ const Dashboard: React.FC = () => {
                       </h3>
                       
                       {/* Filtros del gráfico */}
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 font-montserrat mb-2">
                             Período de tiempo
                           </label>
                           <select
-                            value={selectedTimeRange}
-                            onChange={(e) => setSelectedTimeRange(e.target.value as '7' | '30' | '90' | 'all')}
+                            value={timeRange}
+                            onChange={(e) => setTimeRange(e.target.value as '7' | '30' | '90' | 'all')}
                             className="w-full px-4 py-2 border border-gray-300 rounded-md font-montserrat focus:outline-none focus:ring-2 focus:ring-studdeo-violet"
                           >
                             <option value="all">Todo el tiempo</option>
@@ -483,8 +557,8 @@ const Dashboard: React.FC = () => {
                             Filtrar por curso
                           </label>
                           <select
-                            value={selectedCourseFilter}
-                            onChange={(e) => setSelectedCourseFilter(e.target.value)}
+                            value={courseFilter}
+                            onChange={(e) => setCourseFilter(e.target.value)}
                             className="w-full px-4 py-2 border border-gray-300 rounded-md font-montserrat focus:outline-none focus:ring-2 focus:ring-studdeo-violet"
                           >
                             <option value="all">Todos los cursos</option>
@@ -498,23 +572,17 @@ const Dashboard: React.FC = () => {
 
                         <div className="flex items-end">
                           <button
-                            onClick={handleApplyFilters}
-                            className="w-full px-4 py-2 bg-studdeo-violet text-white rounded-md font-montserrat hover:bg-opacity-90 transition-colors"
-                          >
-                            Aplicar filtros
-                          </button>
-                        </div>
-
-                        <div className="flex items-end">
-                          <button
-                            onClick={() => fetchSalesData()}
+                            onClick={() => {
+                              sessionStorage.removeItem(SALES_CACHE_KEY);
+                              fetchSalesData(true);
+                            }}
                             disabled={isLoadingSales}
                             className="w-full px-4 py-2 bg-gray-600 text-white rounded-md font-montserrat hover:bg-opacity-90 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                           >
                             {isLoadingSales && (
                               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                             )}
-                            {isLoadingSales ? 'Cargando...' : 'Regenerar gráfico'}
+                            {isLoadingSales ? 'Cargando...' : 'Actualizar datos'}
                           </button>
                         </div>
                       </div>

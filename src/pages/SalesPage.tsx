@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { DollarSign, CheckCircle, Clock, ChevronRight } from 'lucide-react';
+import { DollarSign, CheckCircle, Clock, ChevronRight, RefreshCw } from 'lucide-react';
 import SideBar from '../components/Dashboard/SideBar';
 import { Card, CardContent } from '../components/ui/card';
 import { authenticatedFetchJSON } from '../lib/api';
 import { API_ENDPOINTS } from '../config/api';
+
+// Constantes para el cache
+const SALES_PAGE_CACHE_KEY = 'sales_page_cache';
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutos
 
 interface Buyer {
   external_reference: number;
@@ -23,6 +27,8 @@ interface Sale {
   date: string;
   details_sale: DetailSale[];
   buyer: Buyer;
+  discount: number;
+  total: number;
 }
 
 interface CourseWithSales {
@@ -60,8 +66,9 @@ const SalesPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'todas' | 'liquidadas' | 'pendientes'>('todas');
   const [selectedCourse, setSelectedCourse] = useState<string>('all');
   const [courseNameFilter, setCourseNameFilter] = useState<string>('');
-  const [dateFrom, setDateFrom] = useState<string>('');
-  const [dateTo, setDateTo] = useState<string>('');
+  const [dateRange, setDateRange] = useState<'7' | '30' | '90' | 'custom' | 'all'>('all');
+  const [customDateFrom, setCustomDateFrom] = useState<string>('');
+  const [customDateTo, setCustomDateTo] = useState<string>('');
   const [selectedBuyer, setSelectedBuyer] = useState<Buyer | null>(null);
   const [isBuyerModalOpen, setIsBuyerModalOpen] = useState(false);
 
@@ -69,13 +76,66 @@ const SalesPage: React.FC = () => {
     fetchSales();
   }, []);
 
-  const fetchSales = async () => {
+  // Funciones de cache
+  const getCachedData = <T,>(key: string): T | null => {
+    try {
+      const cached = sessionStorage.getItem(key);
+      if (!cached) return null;
+
+      const { data, timestamp } = JSON.parse(cached);
+      const now = Date.now();
+
+      if (now - timestamp > CACHE_DURATION) {
+        console.log('⏰ Caché expirado, limpiando...');
+        sessionStorage.removeItem(key);
+        return null;
+      }
+
+      console.log('✅ Usando datos del caché de ventas');
+      return data as T;
+    } catch (error) {
+      console.error('Error al leer el caché:', error);
+      return null;
+    }
+  };
+
+  const setCachedData = <T,>(key: string, data: T): void => {
+    try {
+      const cacheObject = {
+        data,
+        timestamp: Date.now(),
+      };
+      sessionStorage.setItem(key, JSON.stringify(cacheObject));
+      console.log('💾 Datos de ventas guardados en caché');
+    } catch (error) {
+      console.error('Error al guardar en caché:', error);
+    }
+  };
+
+  const fetchSales = async (forceRefresh = false) => {
     setIsLoading(true);
     setError(null);
+    
     try {
+      // Intentar obtener datos del cache si no es refresh forzado
+      if (!forceRefresh) {
+        const cachedData = getCachedData<CourseWithSales[]>(SALES_PAGE_CACHE_KEY);
+        if (cachedData) {
+          setSalesData(cachedData);
+          setIsLoading(false);
+          return;
+        }
+      }
+
+      console.log('🔄 Obteniendo datos frescos de ventas del backend...');
       const data = await authenticatedFetchJSON<CourseWithSales[]>(API_ENDPOINTS.sales.base);
       console.log('Datos de ventas recibidos:', data);
       setSalesData(data || []);
+      
+      // Guardar en cache
+      if (data) {
+        setCachedData(SALES_PAGE_CACHE_KEY, data);
+      }
     } catch (error) {
       console.error('Error al obtener ventas:', error);
       console.error('Endpoint intentado:', API_ENDPOINTS.sales.base);
@@ -84,6 +144,13 @@ const SalesPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Función para limpiar cache y refrescar
+  const handleRefreshData = () => {
+    sessionStorage.removeItem(SALES_PAGE_CACHE_KEY);
+    console.log('🗑️ Caché limpiado, actualizando datos...');
+    fetchSales(true);
   };
 
   // Función para calcular el total de una venta
@@ -97,10 +164,10 @@ const SalesPage: React.FC = () => {
     return date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
   };
 
-  // Función para calcular la liquidación (ejemplo: 15 días después)
+  // Función para calcular la liquidación (19 días después)
   const calculateLiquidationDate = (saleDate: string) => {
     const date = new Date(saleDate);
-    date.setDate(date.getDate() + 15);
+    date.setDate(date.getDate() + 19);
     const today = new Date();
     const daysRemaining = Math.ceil((date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
     return {
@@ -118,8 +185,10 @@ const SalesPage: React.FC = () => {
 
     salesData.forEach((course) => {
       course.sales.forEach((sale) => {
-        const saleTotal = calculateSaleTotal(sale);
-        const yourIncome = saleTotal * 0.80; // 80% para el vendedor
+        const saleTotal = sale.total; // Usar el total del JSON que ya incluye descuentos
+        const mpCommission = saleTotal * 0.043; // 4.3% comisión de Mercado Pago
+        const afterMPCommission = saleTotal - mpCommission;
+        const yourIncome = afterMPCommission * 0.80; // 80% para el vendedor después de comisión MP
         
         totalIngresos += yourIncome;
         
@@ -148,9 +217,10 @@ const SalesPage: React.FC = () => {
   // Preparar datos para la tabla
   const tableData: TableRow[] = salesData.flatMap((course) =>
     course.sales.map((sale) => {
-      const totalAmount = calculateSaleTotal(sale);
-      const mpCommission = totalAmount * 0.10; // 10% comisión de Mercado Pago
-      const yourIncome = totalAmount * 0.80; // 80% para el vendedor
+      const totalAmount = sale.total; // Usar el total del JSON
+      const mpCommission = totalAmount * 0.043; // 4.3% comisión de Mercado Pago
+      const afterMPCommission = totalAmount - mpCommission;
+      const yourIncome = afterMPCommission * 0.80; // 80% para el vendedor después de comisión MP
       
       return {
         date: sale.date,
@@ -176,19 +246,31 @@ const SalesPage: React.FC = () => {
     const searchWords = normalizeText(courseNameFilter).trim().split(/\s+/).filter(word => word.length > 0);
     const matchesCourseName = searchWords.length === 0 || searchWords.every(word => normalizedCourseName.includes(word));
     
-    // Filtro de fechas
+    // Filtro de fechas mejorado
     let matchesDateRange = true;
-    if (dateFrom || dateTo) {
+    if (dateRange !== 'all') {
       const rowDate = new Date(row.date);
-      if (dateFrom) {
-        const fromDate = new Date(dateFrom);
-        fromDate.setHours(0, 0, 0, 0);
-        matchesDateRange = matchesDateRange && rowDate >= fromDate;
-      }
-      if (dateTo) {
-        const toDate = new Date(dateTo);
-        toDate.setHours(23, 59, 59, 999);
-        matchesDateRange = matchesDateRange && rowDate <= toDate;
+      const now = new Date();
+      
+      if (dateRange === 'custom') {
+        // Rango personalizado
+        if (customDateFrom) {
+          const fromDate = new Date(customDateFrom);
+          fromDate.setHours(0, 0, 0, 0);
+          matchesDateRange = matchesDateRange && rowDate >= fromDate;
+        }
+        if (customDateTo) {
+          const toDate = new Date(customDateTo);
+          toDate.setHours(23, 59, 59, 999);
+          matchesDateRange = matchesDateRange && rowDate <= toDate;
+        }
+      } else {
+        // Rangos predefinidos
+        const daysAgo = parseInt(dateRange);
+        const cutoffDate = new Date(now);
+        cutoffDate.setDate(now.getDate() - daysAgo);
+        cutoffDate.setHours(0, 0, 0, 0);
+        matchesDateRange = rowDate >= cutoffDate;
       }
     }
     
@@ -332,10 +414,20 @@ const SalesPage: React.FC = () => {
                         Pendientes
                       </button>
                     </div>
+                    
+                    {/* Botón Actualizar datos */}
+                    <button
+                      onClick={handleRefreshData}
+                      disabled={isLoading}
+                      className="flex items-center gap-2 px-4 py-2 bg-studdeo-violet text-white rounded-md hover:bg-studdeo-violet-dark disabled:opacity-50 disabled:cursor-not-allowed font-montserrat"
+                    >
+                      <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+                      Actualizar datos
+                    </button>
                   </div>
 
                   {/* Filters */}
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 font-montserrat mb-2">
                         Buscar curso
@@ -369,28 +461,56 @@ const SalesPage: React.FC = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 font-montserrat mb-2">
-                        Fecha desde
+                        Rango de fechas
                       </label>
-                      <input
-                        type="date"
-                        value={dateFrom}
-                        onChange={(e) => setDateFrom(e.target.value)}
+                      <select
+                        value={dateRange}
+                        onChange={(e) => {
+                          setDateRange(e.target.value as '7' | '30' | '90' | 'custom' | 'all');
+                          if (e.target.value !== 'custom') {
+                            setCustomDateFrom('');
+                            setCustomDateTo('');
+                          }
+                        }}
                         className="w-full px-4 py-2 border border-gray-300 rounded-md font-montserrat focus:outline-none focus:ring-2 focus:ring-studdeo-violet"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 font-montserrat mb-2">
-                        Fecha hasta
-                      </label>
-                      <input
-                        type="date"
-                        value={dateTo}
-                        onChange={(e) => setDateTo(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md font-montserrat focus:outline-none focus:ring-2 focus:ring-studdeo-violet"
-                      />
+                      >
+                        <option value="all">Todas las fechas</option>
+                        <option value="7">Últimos 7 días</option>
+                        <option value="30">Últimos 30 días</option>
+                        <option value="90">Últimos 90 días</option>
+                        <option value="custom">Rango personalizado...</option>
+                      </select>
                     </div>
                   </div>
+
+                  {/* Rango personalizado */}
+                  {dateRange === 'custom' && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 font-montserrat mb-2">
+                          Fecha desde
+                        </label>
+                        <input
+                          type="date"
+                          value={customDateFrom}
+                          onChange={(e) => setCustomDateFrom(e.target.value)}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-md font-montserrat focus:outline-none focus:ring-2 focus:ring-studdeo-violet"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 font-montserrat mb-2">
+                          Fecha hasta
+                        </label>
+                        <input
+                          type="date"
+                          value={customDateTo}
+                          onChange={(e) => setCustomDateTo(e.target.value)}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-md font-montserrat focus:outline-none focus:ring-2 focus:ring-studdeo-violet"
+                        />
+                      </div>
+                    </div>
+                  )}
 
                   {/* Table */}
                   {filteredData.length === 0 ? (

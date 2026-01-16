@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '../ui/button';
 import { UserPlus } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
 import type { User } from '../../contexts/AuthContext';
 import CreateUserModal from './CreateUserModal';
 
@@ -10,11 +9,8 @@ interface DashboardHeaderProps {
 }
 
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({ user }) => {
-  const { user: authUser } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const isAdmin = authUser?.role?.toLowerCase() === 'administrator' || 
-                  authUser?.role?.toLowerCase() === 'administrador' || 
-                  authUser?.role?.toLowerCase() === 'admin';
+  const isAdmin = user?.role_name === 'administrator';
 
   const handleCreateUser = (email: string, professors: unknown[]) => {
     console.log('Creating user:', { email, professors });

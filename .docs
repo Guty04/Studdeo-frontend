@@ -1,0 +1,1379 @@
+[
+    {
+        "external_reference": 2,
+        "name": "1° Parcial Análisis Matemático 1 - Profe Gian",
+        "description": "",
+        "product_id": 35,
+        "user_id": 10,
+        "create_date": "2025-09-13T18:38:15",
+        "sales": [
+            {
+                "external_reference": 215,
+                "date": "2025-11-17T20:09:28",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 215
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 169,
+                    "name": "Emiliano SOLANO",
+                    "emai": "solanoemiliano27@gmail.com",
+                    "phone": "3513882697"
+                },
+                "discount": 0.0,
+                "total": 40000.0
+            }
+        ]
+    },
+    {
+        "external_reference": 3,
+        "name": "1° Parcial Física 1 - Profe Gian",
+        "description": "",
+        "product_id": 7,
+        "user_id": 10,
+        "create_date": "2025-09-13T19:22:56",
+        "sales": [
+            {
+                "external_reference": 225,
+                "date": "2025-11-26T17:22:26",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 225
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 70,
+                    "name": "Lautaro",
+                    "emai": "lautarolapid21@gmail.com",
+                    "phone": "3571592199"
+                },
+                "discount": 0.0,
+                "total": 40000.0
+            },
+            {
+                "external_reference": 210,
+                "date": "2025-11-14T21:02:07",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 210
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 96,
+                    "name": "Fabricio Nueva",
+                    "emai": "fabricioalejonueva@gmail.com",
+                    "phone": "+542664165991"
+                },
+                "discount": 0.0,
+                "total": 40000.0
+            },
+            {
+                "external_reference": 177,
+                "date": "2025-11-04T20:18:04",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 177
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 114,
+                    "name": "Nahuel Moreno",
+                    "emai": "nahuel23009@gmail.com",
+                    "phone": "2604370367"
+                },
+                "discount": 0.0,
+                "total": 40000.0
+            },
+            {
+                "external_reference": 123,
+                "date": "2025-10-21T01:04:44",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 123
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 74,
+                    "name": "Sebastian",
+                    "emai": "villegasleonleonardo@gmail.com",
+                    "phone": "3517349269"
+                },
+                "discount": 0.0,
+                "total": 40000.0
+            },
+            {
+                "external_reference": 119,
+                "date": "2025-10-18T23:42:14",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 119
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 86,
+                    "name": "Zoe de la Cuesta",
+                    "emai": "choedelacues@gmail.com",
+                    "phone": "3874122735"
+                },
+                "discount": 0.0,
+                "total": 40000.0
+            },
+            {
+                "external_reference": 52,
+                "date": "2025-09-24T14:56:06",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 52
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 60,
+                    "name": "maría constanza pacheco luna",
+                    "emai": "mariaconstanzapachecoluna@gmail.com",
+                    "phone": "3835554159"
+                },
+                "discount": -6000.0,
+                "total": 34000.0
+            },
+            {
+                "external_reference": 7,
+                "date": "2025-09-14T17:01:19",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 7
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 18,
+                    "name": "asdasd",
+                    "emai": "asdsa@mail.com",
+                    "phone": "5645"
+                },
+                "discount": -40000.0,
+                "total": 0.0
+            },
+            {
+                "external_reference": 6,
+                "date": "2025-09-14T16:28:20",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 6
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 17,
+                    "name": "Sergi",
+                    "emai": "sergio@mutech.io",
+                    "phone": "5491171147720"
+                },
+                "discount": -40000.0,
+                "total": 0.0
+            }
+        ]
+    },
+    {
+        "external_reference": 4,
+        "name": "Teórico Anual Algebra - Profe Gian",
+        "description": "",
+        "product_id": 8,
+        "user_id": 10,
+        "create_date": "2025-09-13T19:40:50",
+        "sales": [
+            {
+                "external_reference": 84,
+                "date": "2025-10-03T01:50:07",
+                "details_sale": [
+                    {
+                        "price": 30000.0,
+                        "quantity": 1,
+                        "external_reference": 84
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 69,
+                    "name": "Leandro Casas",
+                    "emai": "leandrocasas39@gmail.com",
+                    "phone": "3543550812"
+                },
+                "discount": 0.0,
+                "total": 30000.0
+            }
+        ]
+    },
+    {
+        "external_reference": 5,
+        "name": "Análisis Matemático 1 Teórico Anual",
+        "description": "",
+        "product_id": 9,
+        "user_id": 10,
+        "create_date": "2025-09-13T19:53:10",
+        "sales": [
+            {
+                "external_reference": 158,
+                "date": "2025-11-03T12:15:20",
+                "details_sale": [
+                    {
+                        "price": 30000.0,
+                        "quantity": 1,
+                        "external_reference": 158
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 108,
+                    "name": "Sofia Urtiaga",
+                    "emai": "sosourtiagabono@gmail.com",
+                    "phone": "3512033999"
+                },
+                "discount": -300.0,
+                "total": 29700.0
+            },
+            {
+                "external_reference": 128,
+                "date": "2025-10-21T23:07:27",
+                "details_sale": [
+                    {
+                        "price": 30000.0,
+                        "quantity": 1,
+                        "external_reference": 128
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 87,
+                    "name": "Brina Vergiati Tomassoni",
+                    "emai": "brinavergiatitomassoni@gmail.com",
+                    "phone": "+543463442032"
+                },
+                "discount": 0.0,
+                "total": 70000.0
+            },
+            {
+                "external_reference": 99,
+                "date": "2025-10-12T21:02:45",
+                "details_sale": [
+                    {
+                        "price": 30000.0,
+                        "quantity": 1,
+                        "external_reference": 99
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 72,
+                    "name": "Ignacio Benjamin Suárez",
+                    "emai": "s4rkedits@gmail.com",
+                    "phone": "3513739490"
+                },
+                "discount": 0.0,
+                "total": 94000.0
+            }
+        ]
+    },
+    {
+        "external_reference": 6,
+        "name": "2° Parcial Análisis matemático 1 - Profe Gian",
+        "description": "",
+        "product_id": 10,
+        "user_id": 10,
+        "create_date": "2025-09-13T20:02:09",
+        "sales": [
+            {
+                "external_reference": 189,
+                "date": "2025-11-08T20:43:39",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 189
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 100,
+                    "name": "Benjamin Garrido",
+                    "emai": "benjamingarrido364@gmail.com",
+                    "phone": "2975093841"
+                },
+                "discount": 0.0,
+                "total": 40000.0
+            },
+            {
+                "external_reference": 128,
+                "date": "2025-10-21T23:07:27",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 128
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 87,
+                    "name": "Brina Vergiati Tomassoni",
+                    "emai": "brinavergiatitomassoni@gmail.com",
+                    "phone": "+543463442032"
+                },
+                "discount": 0.0,
+                "total": 70000.0
+            }
+        ]
+    },
+    {
+        "external_reference": 7,
+        "name": "3° Parcial Algebra - Profe Gian",
+        "description": "",
+        "product_id": 11,
+        "user_id": 10,
+        "create_date": "2025-09-13T20:11:50",
+        "sales": [
+            {
+                "external_reference": 191,
+                "date": "2025-11-09T18:00:57",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 191
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 61,
+                    "name": "constanza pacheco",
+                    "emai": "mariaconstanzapachecoluna@gmail.com",
+                    "phone": "+543835554159"
+                },
+                "discount": 0.0,
+                "total": 40000.0
+            },
+            {
+                "external_reference": 139,
+                "date": "2025-10-26T20:43:22",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 139
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 70,
+                    "name": "Lautaro",
+                    "emai": "lautarolapid21@gmail.com",
+                    "phone": "3571592199"
+                },
+                "discount": 0.0,
+                "total": 40000.0
+            },
+            {
+                "external_reference": 102,
+                "date": "2025-10-12T22:51:30",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 102
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 74,
+                    "name": "Sebastian",
+                    "emai": "villegasleonleonardo@gmail.com",
+                    "phone": "3517349269"
+                },
+                "discount": 0.0,
+                "total": 40000.0
+            },
+            {
+                "external_reference": 76,
+                "date": "2025-10-07T21:51:32",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 76
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 65,
+                    "name": "constancio",
+                    "emai": "constancioacv22@gmail.com",
+                    "phone": "3834581205"
+                },
+                "discount": 0.0,
+                "total": 40000.0
+            },
+            {
+                "external_reference": 39,
+                "date": "2025-09-23T22:05:25",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 39
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 41,
+                    "name": "Sofia Agustina Belmonte Carbonari",
+                    "emai": "belmontecarbonari@gmail.com",
+                    "phone": "3517434999"
+                },
+                "discount": 0.0,
+                "total": 40000.0
+            }
+        ]
+    },
+    {
+        "external_reference": 8,
+        "name": "2° Parcial Algebra - Profe Gian",
+        "description": "",
+        "product_id": 12,
+        "user_id": 10,
+        "create_date": "2025-09-13T20:17:13",
+        "sales": [
+            {
+                "external_reference": 213,
+                "date": "2025-11-15T19:37:47",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 213
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 172,
+                    "name": "Ian Benjamin Jofre",
+                    "emai": "ianjofre.canalla@gmail.com",
+                    "phone": "93512401223"
+                },
+                "discount": 0.0,
+                "total": 40000.0
+            },
+            {
+                "external_reference": 124,
+                "date": "2025-11-05T13:54:56",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 124
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 74,
+                    "name": "Sebastian",
+                    "emai": "villegasleonleonardo@gmail.com",
+                    "phone": "3517349269"
+                },
+                "discount": 0.0,
+                "total": 40000.0
+            }
+        ]
+    },
+    {
+        "external_reference": 10,
+        "name": "1° Parcial Algebra - Profe Gian",
+        "description": "",
+        "product_id": 13,
+        "user_id": 10,
+        "create_date": "2025-09-13T20:56:18",
+        "sales": [
+            {
+                "external_reference": 211,
+                "date": "2025-11-15T03:24:47",
+                "details_sale": [
+                    {
+                        "price": 36000.0,
+                        "quantity": 1,
+                        "external_reference": 211
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 74,
+                    "name": "Sebastian",
+                    "emai": "villegasleonleonardo@gmail.com",
+                    "phone": "3517349269"
+                },
+                "discount": 0.0,
+                "total": 36000.0
+            },
+            {
+                "external_reference": 91,
+                "date": "2025-10-08T21:41:08",
+                "details_sale": [
+                    {
+                        "price": 36000.0,
+                        "quantity": 1,
+                        "external_reference": 91
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 71,
+                    "name": "Martinez Mauro",
+                    "emai": "mauro-m14@hotmail.com",
+                    "phone": "2975073724"
+                },
+                "discount": 0.0,
+                "total": 36000.0
+            },
+            {
+                "external_reference": 33,
+                "date": "2025-09-23T17:11:58",
+                "details_sale": [
+                    {
+                        "price": 36000.0,
+                        "quantity": 1,
+                        "external_reference": 33
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 28,
+                    "name": "Agostina",
+                    "emai": "agostinacatalanquevedo@gmail.com",
+                    "phone": "+543516154555"
+                },
+                "discount": 0.0,
+                "total": 36000.0
+            }
+        ]
+    },
+    {
+        "external_reference": 12,
+        "name": "3° Parcial Química gral - Profe Gian",
+        "description": "",
+        "product_id": 23,
+        "user_id": 10,
+        "create_date": "2025-09-17T04:14:58",
+        "sales": [
+            {
+                "external_reference": 155,
+                "date": "2025-11-02T18:16:44",
+                "details_sale": [
+                    {
+                        "price": 36000.0,
+                        "quantity": 1,
+                        "external_reference": 155
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 107,
+                    "name": "Julian Ahumada",
+                    "emai": "julianahumada89@gmail.com",
+                    "phone": "3834795387"
+                },
+                "discount": -360.0,
+                "total": 35640.0
+            },
+            {
+                "external_reference": 116,
+                "date": "2025-10-18T13:14:59",
+                "details_sale": [
+                    {
+                        "price": 36000.0,
+                        "quantity": 1,
+                        "external_reference": 116
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 79,
+                    "name": "Lisandro González Rossi",
+                    "emai": "lichigoro@gmail.com",
+                    "phone": "2664725623"
+                },
+                "discount": 0.0,
+                "total": 36000.0
+            },
+            {
+                "external_reference": 75,
+                "date": "2025-10-01T23:15:45",
+                "details_sale": [
+                    {
+                        "price": 36000.0,
+                        "quantity": 1,
+                        "external_reference": 75
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 64,
+                    "name": "constancio Acevedo",
+                    "emai": "constancioacv22@gmail.com",
+                    "phone": "3834581205"
+                },
+                "discount": 0.0,
+                "total": 36000.0
+            }
+        ]
+    },
+    {
+        "external_reference": 13,
+        "name": "2° Parcial Química gral - Profe Gian",
+        "description": "",
+        "product_id": 24,
+        "user_id": 10,
+        "create_date": "2025-09-17T05:10:24",
+        "sales": [
+            {
+                "external_reference": 207,
+                "date": "2025-11-15T16:22:09",
+                "details_sale": [
+                    {
+                        "price": 36000.0,
+                        "quantity": 1,
+                        "external_reference": 207
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 170,
+                    "name": "Lucia Milanese",
+                    "emai": "lmilanese@taborin.edu.ar",
+                    "phone": "03512451622"
+                },
+                "discount": 0.0,
+                "total": 36000.0
+            },
+            {
+                "external_reference": 192,
+                "date": "2025-11-09T20:29:28",
+                "details_sale": [
+                    {
+                        "price": 36000.0,
+                        "quantity": 1,
+                        "external_reference": 192
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 154,
+                    "name": "Valentino D'Amario",
+                    "emai": "damariovalen47@gmail.com",
+                    "phone": "+543516582244"
+                },
+                "discount": 0.0,
+                "total": 36000.0
+            }
+        ]
+    },
+    {
+        "external_reference": 14,
+        "name": "1° Parcial Química gral - Profe Gian",
+        "description": "",
+        "product_id": 25,
+        "user_id": 10,
+        "create_date": "2025-09-17T05:37:19",
+        "sales": [
+            {
+                "external_reference": 120,
+                "date": "2025-10-23T22:59:06",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 120
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 61,
+                    "name": "constanza pacheco",
+                    "emai": "mariaconstanzapachecoluna@gmail.com",
+                    "phone": "+543835554159"
+                },
+                "discount": 0.0,
+                "total": 40000.0
+            },
+            {
+                "external_reference": 9,
+                "date": "2025-09-17T23:39:45",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 9
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 19,
+                    "name": "sergio Esteban muñoz",
+                    "emai": "estebansergio618@gmail.com",
+                    "phone": "+51923511329"
+                },
+                "discount": -40000.0,
+                "total": 0.0
+            }
+        ]
+    },
+    {
+        "external_reference": 15,
+        "name": "Ingreso UTN 2026 - Profe Gian",
+        "description": "",
+        "product_id": 26,
+        "user_id": 10,
+        "create_date": "2025-09-17T18:15:11",
+        "sales": [
+            {
+                "external_reference": 175,
+                "date": "2025-11-03T18:45:28",
+                "details_sale": [
+                    {
+                        "price": 84000.0,
+                        "quantity": 1,
+                        "external_reference": 175
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 111,
+                    "name": "Dylan Ezequiel Contrera",
+                    "emai": "dylancontrera392@gmail.com",
+                    "phone": "3518578554"
+                },
+                "discount": 0.0,
+                "total": 84000.0
+            }
+        ]
+    },
+    {
+        "external_reference": 16,
+        "name": "1° Parcial Análisis Matemático 2 - Profe Gian",
+        "description": "",
+        "product_id": 30,
+        "user_id": 10,
+        "create_date": "2025-09-18T00:37:53",
+        "sales": [
+            {
+                "external_reference": 65,
+                "date": "2025-09-26T14:00:54",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 65
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 62,
+                    "name": "Silvia Polijo",
+                    "emai": "silviapolijo10@gmail.com",
+                    "phone": "3544636695"
+                },
+                "discount": -400.0,
+                "total": 39600.0
+            },
+            {
+                "external_reference": 29,
+                "date": "2025-09-23T20:02:16",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 29
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 30,
+                    "name": "Marcos Ferreira",
+                    "emai": "marcos.e.ferr@gmail.com",
+                    "phone": "03576472658"
+                },
+                "discount": -4000.0,
+                "total": 36000.0
+            }
+        ]
+    },
+    {
+        "external_reference": 17,
+        "name": "2° Parcial Análisis Matemático 2 - Profe Gian",
+        "description": "",
+        "product_id": 29,
+        "user_id": 10,
+        "create_date": "2025-09-18T00:49:57",
+        "sales": [
+            {
+                "external_reference": 202,
+                "date": "2025-11-11T22:22:31",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 202
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 154,
+                    "name": "Valentino D'Amario",
+                    "emai": "damariovalen47@gmail.com",
+                    "phone": "+543516582244"
+                },
+                "discount": 0.0,
+                "total": 40000.0
+            },
+            {
+                "external_reference": 200,
+                "date": "2025-11-11T13:37:42",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 200
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 166,
+                    "name": "Angelina Gaiero",
+                    "emai": "angelinagaiero67@gmail.com",
+                    "phone": "3472431665"
+                },
+                "discount": 0.0,
+                "total": 40000.0
+            },
+            {
+                "external_reference": 172,
+                "date": "2025-11-03T16:29:16",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 172
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 110,
+                    "name": "Luis Agustin Luna",
+                    "emai": "42639448l@gmail.com",
+                    "phone": "3576467966"
+                },
+                "discount": 0.0,
+                "total": 40000.0
+            },
+            {
+                "external_reference": 143,
+                "date": "2025-10-28T12:41:35",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 143
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 62,
+                    "name": "Silvia Polijo",
+                    "emai": "silviapolijo10@gmail.com",
+                    "phone": "3544636695"
+                },
+                "discount": 0.0,
+                "total": 40000.0
+            }
+        ]
+    },
+    {
+        "external_reference": 18,
+        "name": "AM2 Teórico Anual - Profe Gian",
+        "description": "",
+        "product_id": 31,
+        "user_id": 10,
+        "create_date": "2025-09-18T00:55:46",
+        "sales": [
+            {
+                "external_reference": 230,
+                "date": "2026-01-08T15:04:41",
+                "details_sale": [
+                    {
+                        "price": 30000.0,
+                        "quantity": 1,
+                        "external_reference": 230
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 180,
+                    "name": "Tomas Ghirardi",
+                    "emai": "totoghirardi@gmail.com",
+                    "phone": "+543518015039"
+                },
+                "discount": 0.0,
+                "total": 30000.0
+            }
+        ]
+    },
+    {
+        "external_reference": 19,
+        "name": "Prueba de pago MP",
+        "description": "",
+        "product_id": 32,
+        "user_id": 10,
+        "create_date": "2025-09-18T02:22:39",
+        "sales": [
+            {
+                "external_reference": 13,
+                "date": "2025-09-19T20:23:13",
+                "details_sale": [
+                    {
+                        "price": 200.0,
+                        "quantity": 1,
+                        "external_reference": 13
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 25,
+                    "name": "Lisandro Belmonte",
+                    "emai": "lichobelmonte0@gmail.com",
+                    "phone": "03813041017"
+                },
+                "discount": 0.0,
+                "total": 200.0
+            }
+        ]
+    },
+    {
+        "external_reference": 20,
+        "name": "1° Parcial Física 2 - Profe Gian",
+        "description": "",
+        "product_id": 33,
+        "user_id": 10,
+        "create_date": "2025-09-18T03:20:42",
+        "sales": []
+    },
+    {
+        "external_reference": 23,
+        "name": "Algebra Anual UTN - Profe Gian",
+        "description": "",
+        "product_id": 49,
+        "user_id": 10,
+        "create_date": "2025-09-25T19:03:42",
+        "sales": [
+            {
+                "external_reference": 203,
+                "date": "2025-11-11T23:20:12",
+                "details_sale": [
+                    {
+                        "price": 85000.0,
+                        "quantity": 1,
+                        "external_reference": 203
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 169,
+                    "name": "Emiliano SOLANO",
+                    "emai": "solanoemiliano27@gmail.com",
+                    "phone": "3513882697"
+                },
+                "discount": 0.0,
+                "total": 85000.0
+            }
+        ]
+    },
+    {
+        "external_reference": 24,
+        "name": "Final de Análisis Matemático 1 UTN - Profe Gian",
+        "description": "",
+        "product_id": 50,
+        "user_id": 10,
+        "create_date": "2025-10-01T02:31:37",
+        "sales": [
+            {
+                "external_reference": 180,
+                "date": "2025-11-04T23:42:16",
+                "details_sale": [
+                    {
+                        "price": 85000.0,
+                        "quantity": 1,
+                        "external_reference": 180
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 115,
+                    "name": "Azul",
+                    "emai": "azulpenida@gmail.com",
+                    "phone": "3516746227"
+                },
+                "discount": 0.0,
+                "total": 85000.0
+            },
+            {
+                "external_reference": 136,
+                "date": "2025-10-26T17:25:22",
+                "details_sale": [
+                    {
+                        "price": 85000.0,
+                        "quantity": 1,
+                        "external_reference": 136
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 86,
+                    "name": "Zoe de la Cuesta",
+                    "emai": "choedelacues@gmail.com",
+                    "phone": "3874122735"
+                },
+                "discount": 0.0,
+                "total": 85000.0
+            }
+        ]
+    },
+    {
+        "external_reference": 25,
+        "name": "2° Parcial Practico Física 1 UTN - Profe Gian",
+        "description": "",
+        "product_id": 51,
+        "user_id": 10,
+        "create_date": "2025-10-01T03:50:19",
+        "sales": [
+            {
+                "external_reference": 218,
+                "date": "2025-11-20T02:06:44",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 218
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 175,
+                    "name": "Anna Carla Corvalan Molina",
+                    "emai": "annacorvalan25molina@gmail.com",
+                    "phone": "+543517143793"
+                },
+                "discount": 0.0,
+                "total": 40000.0
+            },
+            {
+                "external_reference": 199,
+                "date": "2025-11-11T12:44:44",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 199
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 114,
+                    "name": "Nahuel Moreno",
+                    "emai": "nahuel23009@gmail.com",
+                    "phone": "2604370367"
+                },
+                "discount": 0.0,
+                "total": 40000.0
+            },
+            {
+                "external_reference": 148,
+                "date": "2025-10-30T22:28:38",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 148
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 100,
+                    "name": "Benjamin Garrido",
+                    "emai": "benjamingarrido364@gmail.com",
+                    "phone": "2975093841"
+                },
+                "discount": 0.0,
+                "total": 40000.0
+            },
+            {
+                "external_reference": 142,
+                "date": "2025-10-27T15:37:06",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 142
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 96,
+                    "name": "Fabricio Nueva",
+                    "emai": "fabricioalejonueva@gmail.com",
+                    "phone": "+542664165991"
+                },
+                "discount": 0.0,
+                "total": 40000.0
+            },
+            {
+                "external_reference": 113,
+                "date": "2025-10-19T12:13:33",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 113
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 83,
+                    "name": "Matias",
+                    "emai": "fermaty8@gmail.com",
+                    "phone": "3516627910"
+                },
+                "discount": 0.0,
+                "total": 40000.0
+            },
+            {
+                "external_reference": 107,
+                "date": "2025-10-16T22:36:49",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 107
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 76,
+                    "name": "tomas olmos",
+                    "emai": "tomasolmos2343@gmail.com",
+                    "phone": "3563430969"
+                },
+                "discount": 0.0,
+                "total": 40000.0
+            },
+            {
+                "external_reference": 106,
+                "date": "2025-10-16T13:25:52",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 106
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 75,
+                    "name": "Delfina Belbuzzi",
+                    "emai": "delfinabelbuzzi@gmail.com",
+                    "phone": "0351157510540"
+                },
+                "discount": -400.0,
+                "total": 39600.0
+            },
+            {
+                "external_reference": 88,
+                "date": "2025-10-07T12:36:02",
+                "details_sale": [
+                    {
+                        "price": 40000.0,
+                        "quantity": 1,
+                        "external_reference": 88
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 70,
+                    "name": "Lautaro",
+                    "emai": "lautarolapid21@gmail.com",
+                    "phone": "3571592199"
+                },
+                "discount": 0.0,
+                "total": 40000.0
+            }
+        ]
+    },
+    {
+        "external_reference": 26,
+        "name": "AM1 2° Parcial práctico + Teórico - Profe Gian",
+        "description": "",
+        "product_id": 52,
+        "user_id": 10,
+        "create_date": "2025-10-02T03:54:14",
+        "sales": []
+    },
+    {
+        "external_reference": 27,
+        "name": "Final de Análisis Matemático 2 UTN - Profe Gian",
+        "description": "",
+        "product_id": 53,
+        "user_id": 10,
+        "create_date": "2025-10-02T04:44:13",
+        "sales": []
+    },
+    {
+        "external_reference": 28,
+        "name": "Final Física 1 Práctico UTN - Profe Gian",
+        "description": "",
+        "product_id": 55,
+        "user_id": 10,
+        "create_date": "2025-10-02T05:09:33",
+        "sales": [
+            {
+                "external_reference": 185,
+                "date": "2025-11-07T11:09:58",
+                "details_sale": [
+                    {
+                        "price": 64000.0,
+                        "quantity": 1,
+                        "external_reference": 185
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 115,
+                    "name": "Azul",
+                    "emai": "azulpenida@gmail.com",
+                    "phone": "3516746227"
+                },
+                "discount": 0.0,
+                "total": 64000.0
+            },
+            {
+                "external_reference": 151,
+                "date": "2025-10-30T21:56:08",
+                "details_sale": [
+                    {
+                        "price": 64000.0,
+                        "quantity": 1,
+                        "external_reference": 151
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 101,
+                    "name": "Milagros Nieto",
+                    "emai": "milagrosnieto011@gmail.com",
+                    "phone": "3512439122"
+                },
+                "discount": 0.0,
+                "total": 64000.0
+            },
+            {
+                "external_reference": 135,
+                "date": "2025-10-25T20:58:42",
+                "details_sale": [
+                    {
+                        "price": 64000.0,
+                        "quantity": 1,
+                        "external_reference": 135
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 93,
+                    "name": "Valentino Ilari Liotta",
+                    "emai": "valentinoilariliotta@gmail.com",
+                    "phone": "3472431144"
+                },
+                "discount": 0.0,
+                "total": 64000.0
+            },
+            {
+                "external_reference": 109,
+                "date": "2025-10-16T19:26:35",
+                "details_sale": [
+                    {
+                        "price": 64000.0,
+                        "quantity": 1,
+                        "external_reference": 109
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 78,
+                    "name": "benjamin nuñez",
+                    "emai": "benjanunnez@gmail.com",
+                    "phone": "03518021038"
+                },
+                "discount": 0.0,
+                "total": 64000.0
+            },
+            {
+                "external_reference": 99,
+                "date": "2025-10-12T21:02:45",
+                "details_sale": [
+                    {
+                        "price": 64000.0,
+                        "quantity": 1,
+                        "external_reference": 99
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 72,
+                    "name": "Ignacio Benjamin Suárez",
+                    "emai": "s4rkedits@gmail.com",
+                    "phone": "3513739490"
+                },
+                "discount": 0.0,
+                "total": 94000.0
+            }
+        ]
+    },
+    {
+        "external_reference": 29,
+        "name": "Química Gral materia completa UTN - Profe Gian",
+        "description": "",
+        "product_id": 54,
+        "user_id": 10,
+        "create_date": "2025-10-02T05:46:10",
+        "sales": [
+            {
+                "external_reference": 222,
+                "date": "2025-11-25T15:10:07",
+                "details_sale": [
+                    {
+                        "price": 80000.0,
+                        "quantity": 1,
+                        "external_reference": 222
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 169,
+                    "name": "Emiliano SOLANO",
+                    "emai": "solanoemiliano27@gmail.com",
+                    "phone": "3513882697"
+                },
+                "discount": 0.0,
+                "total": 80000.0
+            }
+        ]
+    },
+    {
+        "external_reference": 30,
+        "name": "1° Parcial Intensivo Álgebra - Profe Gian",
+        "description": "",
+        "product_id": 59,
+        "user_id": 10,
+        "create_date": "2025-10-02T06:47:32",
+        "sales": [
+            {
+                "external_reference": 97,
+                "date": "2025-10-09T17:43:18",
+                "details_sale": [
+                    {
+                        "price": 50000.0,
+                        "quantity": 1,
+                        "external_reference": 97
+                    }
+                ],
+                "buyer": {
+                    "external_reference": 61,
+                    "name": "constanza pacheco",
+                    "emai": "mariaconstanzapachecoluna@gmail.com",
+                    "phone": "+543835554159"
+                },
+                "discount": 0.0,
+                "total": 50000.0
+            }
+        ]
+    },
+    {
+        "external_reference": 31,
+        "name": "2° Parcial Práctico Física 2 UTN - Profe Gian",
+        "description": "Atención! Nos falta terminar de crear las ultimas unidades de este parcial, las estaremos subiendo próximamente. Publicamos este curso a pedido de los estudiantes que necesitaban las clases aunque no esté completo.",
+        "product_id": 60,
+        "user_id": 10,
+        "create_date": "2025-10-14T21:40:26",
+        "sales": []
+    }
+]

@@ -398,10 +398,10 @@ const Dashboard: React.FC = () => {
     return (
       <div className="flex h-screen bg-gray-50">
         <SideBar />
-        <main className="flex-1 overflow-auto">
-          <div className="p-8">
+        <main className="flex-1 overflow-auto pt-16 lg:pt-0">
+          <div className="p-4 sm:p-6 lg:p-8">
             <DashboardHeader user={user} />
-            <div className="-mx-8">
+            <div className="-mx-4 sm:-mx-6 lg:-mx-8">
               <hr className="mb-6 border-gray-300" />
             </div>
             <div className="text-center py-12">
@@ -418,10 +418,10 @@ const Dashboard: React.FC = () => {
   return (
     <div className="flex h-screen bg-gray-50">
       <SideBar />
-      <main className="flex-1 overflow-auto">
-        <div className="p-8">
+      <main className="flex-1 overflow-auto pt-16 lg:pt-0">
+        <div className="p-4 sm:p-6 lg:p-8">
           <DashboardHeader user={user} />
-          <div className="-mx-8">
+          <div className="-mx-4 sm:-mx-6 lg:-mx-8">
             <hr className="mb-6 border-gray-300" />
           </div>
 
@@ -443,7 +443,7 @@ const Dashboard: React.FC = () => {
           ) : (
             <>
               {/* Stats Cards - Solo para Admin */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
                 <Card className="border-0 shadow-sm">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-4">
@@ -501,11 +501,11 @@ const Dashboard: React.FC = () => {
 
               {/* Tabs */}
               <Card>
-                <CardContent className="p-6">
-                  <div className="flex gap-4 mb-6 border-b border-gray-200">
+                <CardContent className="p-4 sm:p-6">
+                  <div className="flex gap-2 sm:gap-4 mb-6 border-b border-gray-200 overflow-x-auto">
                     <button
                       onClick={() => setActiveTab('graficos')}
-                      className={`px-4 py-2 font-montserrat ${
+                      className={`px-3 sm:px-4 py-2 font-montserrat text-sm sm:text-base whitespace-nowrap ${
                         activeTab === 'graficos'
                           ? 'text-gray-900 border-b-2 border-gray-900'
                           : 'text-gray-500'
@@ -515,7 +515,7 @@ const Dashboard: React.FC = () => {
                     </button>
                     <button
                       onClick={() => setActiveTab('cursos')}
-                      className={`px-4 py-2 font-montserrat ${
+                      className={`px-3 sm:px-4 py-2 font-montserrat text-sm sm:text-base whitespace-nowrap ${
                         activeTab === 'cursos'
                           ? 'text-gray-900 border-b-2 border-gray-900'
                           : 'text-gray-500'
@@ -527,12 +527,12 @@ const Dashboard: React.FC = () => {
 
                   {activeTab === 'graficos' ? (
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 font-montserrat mb-4">
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 font-montserrat mb-4">
                         Ventas en el Tiempo
                       </h3>
                       
                       {/* Filtros del gráfico */}
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 font-montserrat mb-2">
                             Período de tiempo

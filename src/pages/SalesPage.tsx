@@ -286,14 +286,14 @@ const SalesPage: React.FC = () => {
   return (
     <div className="flex h-screen bg-gray-50">
       <SideBar />
-      <div className="flex-1 flex flex-col">
-        <main className="flex-1 overflow-y-auto p-8">
+      <div className="flex-1 flex flex-col pt-16 lg:pt-0">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
           {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 font-montserrat">
+          <div className="mb-6 sm:mb-8">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 font-montserrat">
               Ventas y Liquidaciones
             </h1>
-            <p className="text-gray-600 font-montserrat mt-2">
+            <p className="text-gray-600 font-montserrat mt-2 text-sm sm:text-base">
               Gestiona tus ventas y seguimiento de liquidaciones de Mercado Pago
             </p>
           </div>
@@ -316,7 +316,7 @@ const SalesPage: React.FC = () => {
           ) : (
             <>
               {/* Stats Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
                 <Card className="border-0 shadow-sm">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-4">
@@ -374,13 +374,13 @@ const SalesPage: React.FC = () => {
 
               {/* Table Card */}
               <Card>
-                <CardContent className="p-6">
+                <CardContent className="p-4 sm:p-6">
                   {/* Tabs */}
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex gap-4">
+                  <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
+                    <div className="flex gap-2 sm:gap-4 overflow-x-auto">
                       <button
                         onClick={() => setActiveTab('todas')}
-                        className={`px-4 py-2 font-montserrat ${
+                        className={`px-3 sm:px-4 py-2 font-montserrat text-sm sm:text-base whitespace-nowrap ${
                           activeTab === 'todas'
                             ? 'text-gray-900 border-b-2 border-gray-900'
                             : 'text-gray-500'
@@ -390,7 +390,7 @@ const SalesPage: React.FC = () => {
                       </button>
                       <button
                         onClick={() => setActiveTab('liquidadas')}
-                        className={`px-4 py-2 font-montserrat ${
+                        className={`px-3 sm:px-4 py-2 font-montserrat text-sm sm:text-base whitespace-nowrap ${
                           activeTab === 'liquidadas'
                             ? 'text-gray-900 border-b-2 border-gray-900'
                             : 'text-gray-500'
@@ -400,7 +400,7 @@ const SalesPage: React.FC = () => {
                       </button>
                       <button
                         onClick={() => setActiveTab('pendientes')}
-                        className={`px-4 py-2 font-montserrat ${
+                        className={`px-3 sm:px-4 py-2 font-montserrat text-sm sm:text-base whitespace-nowrap ${
                           activeTab === 'pendientes'
                             ? 'text-gray-900 border-b-2 border-gray-900'
                             : 'text-gray-500'
@@ -414,7 +414,7 @@ const SalesPage: React.FC = () => {
                     <button
                       onClick={handleRefreshData}
                       disabled={isLoading}
-                      className="flex items-center gap-2 px-4 py-2 bg-studdeo-violet text-white rounded-md hover:bg-studdeo-violet-dark disabled:opacity-50 disabled:cursor-not-allowed font-montserrat"
+                      className="flex items-center gap-2 px-4 py-2 bg-studdeo-violet text-white rounded-md hover:bg-studdeo-violet-dark disabled:opacity-50 disabled:cursor-not-allowed font-montserrat text-sm sm:text-base w-full sm:w-auto justify-center"
                     >
                       <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
                       Actualizar datos
@@ -422,7 +422,7 @@ const SalesPage: React.FC = () => {
                   </div>
 
                   {/* Filters */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 font-montserrat mb-2">
                         Buscar curso
@@ -518,99 +518,191 @@ const SalesPage: React.FC = () => {
                       </p>
                     </div>
                   ) : (
-                    <div className="overflow-x-auto">
-                      <table className="w-full">
-                        <thead>
-                          <tr className="border-b border-gray-200">
-                            <th className="text-left py-3 px-4 font-montserrat text-sm font-semibold text-gray-700">
-                              Fecha
-                            </th>
-                            <th className="text-left py-3 px-4 font-montserrat text-sm font-semibold text-gray-700">
-                              Curso
-                            </th>
-                            <th className="text-left py-3 px-4 font-montserrat text-sm font-semibold text-gray-700">
-                              Estudiante
-                            </th>
-                            <th className="text-right py-3 px-4 font-montserrat text-sm font-semibold text-gray-700">
-                              Monto Total
-                            </th>
-                            <th className="text-right py-3 px-4 font-montserrat text-sm font-semibold text-gray-700">
-                              Comisión MP
-                            </th>
-                            <th className="text-right py-3 px-4 font-montserrat text-sm font-semibold text-gray-700">
-                              Comisión
-                            </th>
-                            <th className="text-right py-3 px-4 font-montserrat text-sm font-semibold text-gray-700">
-                              Tu Ingreso
-                            </th>
-                            <th className="text-center py-3 px-4 font-montserrat text-sm font-semibold text-gray-700">
-                              Estado
-                            </th>
-                            <th className="text-left py-3 px-4 font-montserrat text-sm font-semibold text-gray-700">
-                              Liquidación
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {filteredData.map((row, index) => (
-                            <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
-                              <td className="py-3 px-4 font-montserrat text-sm text-gray-900">
-                                {formatDate(row.date)}
-                              </td>
-                              <td className="py-3 px-4 font-montserrat text-sm text-gray-900">
-                                {row.courseName}
-                              </td>
-                              <td className="py-3 px-4 font-montserrat text-sm text-gray-900">
-                                <button
-                                  onClick={() => {
-                                    setSelectedBuyer(row.buyer);
-                                    setIsBuyerModalOpen(true);
-                                  }}
-                                  className="text-studdeo-violet hover:underline cursor-pointer font-medium flex items-center gap-1"
-                                >
-                                  {row.studentName}
-                                  <ChevronRight className="w-4 h-4" />
-                                </button>
-                              </td>
-                              <td className="py-3 px-4 font-montserrat text-sm text-gray-900 text-right">
-                                $ {row.totalAmount.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                              </td>
-                              <td className="py-3 px-4 font-montserrat text-sm text-red-600 text-right">
-                                -$ {row.mpCommission.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                              </td>
-                              <td className="py-3 px-4 font-montserrat text-sm text-gray-600 text-right">
-                                {row.commission}%
-                              </td>
-                              <td className="py-3 px-4 font-montserrat text-sm text-green-600 text-right">
-                                $ {row.yourIncome.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                              </td>
-                              <td className="py-3 px-4 text-center">
+                    <>
+                      {/* Vista Desktop - Tabla */}
+                      <div className="hidden lg:block overflow-x-auto">
+                        <table className="w-full min-w-max">
+                          <thead>
+                            <tr className="border-b border-gray-200">
+                              <th className="text-left py-3 px-2 xl:px-4 font-montserrat text-xs xl:text-sm font-semibold text-gray-700 whitespace-nowrap">
+                                Fecha
+                              </th>
+                              <th className="text-left py-3 px-2 xl:px-4 font-montserrat text-xs xl:text-sm font-semibold text-gray-700">
+                                Curso
+                              </th>
+                              <th className="text-left py-3 px-2 xl:px-4 font-montserrat text-xs xl:text-sm font-semibold text-gray-700">
+                                Estudiante
+                              </th>
+                              <th className="text-right py-3 px-2 xl:px-4 font-montserrat text-xs xl:text-sm font-semibold text-gray-700 whitespace-nowrap">
+                                Monto Total
+                              </th>
+                              <th className="text-right py-3 px-2 xl:px-4 font-montserrat text-xs xl:text-sm font-semibold text-gray-700 whitespace-nowrap">
+                                Comisión MP
+                              </th>
+                              <th className="text-right py-3 px-2 xl:px-4 font-montserrat text-xs xl:text-sm font-semibold text-gray-700 whitespace-nowrap">
+                                Comisión
+                              </th>
+                              <th className="text-right py-3 px-2 xl:px-4 font-montserrat text-xs xl:text-sm font-semibold text-gray-700 whitespace-nowrap">
+                                Tu Ingreso
+                              </th>
+                              <th className="text-center py-3 px-2 xl:px-4 font-montserrat text-xs xl:text-sm font-semibold text-gray-700 whitespace-nowrap">
+                                Estado
+                              </th>
+                              <th className="text-left py-3 px-2 xl:px-4 font-montserrat text-xs xl:text-sm font-semibold text-gray-700 whitespace-nowrap">
+                                Liquidación
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {filteredData.map((row, index) => (
+                              <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
+                                <td className="py-3 px-2 xl:px-4 font-montserrat text-xs xl:text-sm text-gray-900 whitespace-nowrap">
+                                  {formatDate(row.date)}
+                                </td>
+                                <td className="py-3 px-2 xl:px-4 font-montserrat text-xs xl:text-sm text-gray-900 max-w-xs truncate">
+                                  {row.courseName}
+                                </td>
+                                <td className="py-3 px-2 xl:px-4 font-montserrat text-xs xl:text-sm text-gray-900">
+                                  <button
+                                    onClick={() => {
+                                      setSelectedBuyer(row.buyer);
+                                      setIsBuyerModalOpen(true);
+                                    }}
+                                    className="text-studdeo-violet hover:underline cursor-pointer font-medium flex items-center gap-1 max-w-xs truncate"
+                                  >
+                                    {row.studentName}
+                                    <ChevronRight className="w-3 h-3 xl:w-4 xl:h-4 flex-shrink-0" />
+                                  </button>
+                                </td>
+                                <td className="py-3 px-2 xl:px-4 font-montserrat text-xs xl:text-sm text-gray-900 text-right whitespace-nowrap">
+                                  $ {row.totalAmount.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                </td>
+                                <td className="py-3 px-2 xl:px-4 font-montserrat text-xs xl:text-sm text-red-600 text-right whitespace-nowrap">
+                                  -$ {row.mpCommission.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                </td>
+                                <td className="py-3 px-2 xl:px-4 font-montserrat text-xs xl:text-sm text-gray-600 text-right whitespace-nowrap">
+                                  {row.commission}%
+                                </td>
+                                <td className="py-3 px-2 xl:px-4 font-montserrat text-xs xl:text-sm text-green-600 text-right whitespace-nowrap">
+                                  $ {row.yourIncome.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                </td>
+                                <td className="py-3 px-2 xl:px-4 text-center">
+                                  {row.liquidation.isPending ? (
+                                    <span className="inline-flex items-center px-2 xl:px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 font-montserrat whitespace-nowrap">
+                                      <Clock className="w-3 h-3 mr-1" />
+                                      Pendiente
+                                    </span>
+                                  ) : (
+                                    <span className="inline-flex items-center px-2 xl:px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 font-montserrat whitespace-nowrap">
+                                      <CheckCircle className="w-3 h-3 mr-1" />
+                                      Liquidado
+                                    </span>
+                                  )}
+                                </td>
+                                <td className="py-3 px-2 xl:px-4 font-montserrat text-xs xl:text-sm text-gray-600 whitespace-nowrap">
+                                  {row.liquidation.date}
+                                  <br />
+                                  <span className="text-xs text-gray-500">
+                                    {row.liquidation.isPending
+                                      ? `En ${row.liquidation.daysRemaining} días`
+                                      : 'Completado'}
+                                  </span>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+
+                      {/* Vista Mobile - Cards */}
+                      <div className="lg:hidden space-y-4">
+                        {filteredData.map((row, index) => (
+                          <div key={index} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                            {/* Header de la card */}
+                            <div className="flex items-center justify-between mb-3 pb-3 border-b border-gray-100">
+                              <div className="flex-1">
+                                <p className="text-xs text-gray-500 font-montserrat mb-1">Fecha</p>
+                                <p className="text-sm font-semibold text-gray-900 font-montserrat">{formatDate(row.date)}</p>
+                              </div>
+                              <div>
                                 {row.liquidation.isPending ? (
-                                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 font-montserrat">
+                                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 font-montserrat">
                                     <Clock className="w-3 h-3 mr-1" />
                                     Pendiente
                                   </span>
                                 ) : (
-                                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 font-montserrat">
+                                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 font-montserrat">
                                     <CheckCircle className="w-3 h-3 mr-1" />
                                     Liquidado
                                   </span>
                                 )}
-                              </td>
-                              <td className="py-3 px-4 font-montserrat text-sm text-gray-600">
-                                {row.liquidation.date}
-                                <br />
-                                <span className="text-xs text-gray-500">
-                                  {row.liquidation.isPending
-                                    ? `En ${row.liquidation.daysRemaining} días`
-                                    : 'Completado'}
-                                </span>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
+                              </div>
+                            </div>
+
+                            {/* Curso */}
+                            <div className="mb-3">
+                              <p className="text-xs text-gray-500 font-montserrat mb-1">Curso</p>
+                              <p className="text-sm font-medium text-gray-900 font-montserrat">{row.courseName}</p>
+                            </div>
+
+                            {/* Estudiante */}
+                            <div className="mb-3">
+                              <p className="text-xs text-gray-500 font-montserrat mb-1">Estudiante</p>
+                              <button
+                                onClick={() => {
+                                  setSelectedBuyer(row.buyer);
+                                  setIsBuyerModalOpen(true);
+                                }}
+                                className="text-sm text-studdeo-violet hover:underline cursor-pointer font-medium flex items-center gap-1 font-montserrat"
+                              >
+                                {row.studentName}
+                                <ChevronRight className="w-4 h-4" />
+                              </button>
+                            </div>
+
+                            {/* Montos */}
+                            <div className="grid grid-cols-2 gap-3 mb-3">
+                              <div>
+                                <p className="text-xs text-gray-500 font-montserrat mb-1">Monto Total</p>
+                                <p className="text-sm font-semibold text-gray-900 font-montserrat">
+                                  $ {row.totalAmount.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                </p>
+                              </div>
+                              <div>
+                                <p className="text-xs text-gray-500 font-montserrat mb-1">Comisión MP</p>
+                                <p className="text-sm font-semibold text-red-600 font-montserrat">
+                                  -$ {row.mpCommission.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3 mb-3">
+                              <div>
+                                <p className="text-xs text-gray-500 font-montserrat mb-1">Comisión</p>
+                                <p className="text-sm font-semibold text-gray-900 font-montserrat">{row.commission}%</p>
+                              </div>
+                              <div>
+                                <p className="text-xs text-gray-500 font-montserrat mb-1">Tu Ingreso</p>
+                                <p className="text-sm font-semibold text-green-600 font-montserrat">
+                                  $ {row.yourIncome.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                </p>
+                              </div>
+                            </div>
+
+                            {/* Liquidación */}
+                            <div className="pt-3 border-t border-gray-100">
+                              <p className="text-xs text-gray-500 font-montserrat mb-1">Liquidación</p>
+                              <p className="text-sm font-medium text-gray-900 font-montserrat">{row.liquidation.date}</p>
+                              <p className="text-xs text-gray-500 font-montserrat mt-1">
+                                {row.liquidation.isPending
+                                  ? `En ${row.liquidation.daysRemaining} días`
+                                  : 'Completado'}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </>
                   )}
                 </CardContent>
               </Card>
@@ -648,13 +740,6 @@ const SalesPage: React.FC = () => {
                   Email
                 </label>
                 <p className="text-base font-montserrat text-gray-900">{selectedBuyer.emai}</p>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-600 font-montserrat mb-1">
-                  Teléfono
-                </label>
-                <p className="text-base font-montserrat text-gray-900">{selectedBuyer.phone}</p>
               </div>
             </div>
             

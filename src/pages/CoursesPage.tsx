@@ -85,14 +85,14 @@ const CoursesPage: React.FC = () => {
     <div className="flex h-screen bg-gray-50">
       <SideBar />
       
-      <div className="flex-1 overflow-auto">
-        <div className="p-8">
+      <div className="flex-1 overflow-auto pt-16 lg:pt-0">
+        <div className="p-4 sm:p-6 lg:p-8">
           {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 font-montserrat mb-2">
+          <div className="mb-6 sm:mb-8">
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 font-montserrat mb-2">
               Mis Cursos
             </h1>
-            <p className="text-gray-600 font-montserrat mb-4">
+            <p className="text-gray-600 font-montserrat mb-4 text-sm sm:text-base">
               Gestiona tus cursos y contenido educativo
             </p>
             
@@ -103,7 +103,7 @@ const CoursesPage: React.FC = () => {
                 placeholder="Buscar cursos por nombre..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-studdeo-violet focus:border-transparent font-montserrat"
+                className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-studdeo-violet focus:border-transparent font-montserrat text-sm sm:text-base"
               />
               <svg
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
@@ -143,9 +143,9 @@ const CoursesPage: React.FC = () => {
                     key={course.external_reference}
                     className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
                   >
-                    <div className="flex">
+                    <div className="flex flex-col sm:flex-row">
                       {/* Course Image/Banner */}
-                      <div className="w-72 h-48 bg-gradient-to-br from-studdeo-violet to-purple-700 flex flex-col items-center justify-between text-white p-6 relative overflow-hidden">
+                      <div className="w-full sm:w-72 h-48 bg-gradient-to-br from-studdeo-violet to-purple-700 flex flex-col items-center justify-between text-white p-6 relative overflow-hidden">
                         {/* Decorative Background Pattern */}
                         <div className="absolute inset-0 opacity-10">
                           <div className="absolute top-4 right-4 w-20 h-20 border-4 border-white rounded-full"></div>
@@ -182,10 +182,10 @@ const CoursesPage: React.FC = () => {
                       </div>
 
                       {/* Course Info */}
-                      <div className="flex-1 p-6 flex items-center justify-between">
-                        <div className="flex-1">
+                      <div className="flex-1 p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div className="flex-1 w-full">
                           <div className="flex items-center gap-3 mb-2">
-                            <h2 className="text-xl font-semibold text-gray-900 font-montserrat">
+                            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 font-montserrat">
                               {course.name}
                             </h2>
                           </div>
@@ -199,7 +199,7 @@ const CoursesPage: React.FC = () => {
                         {/* Action Button */}
                         <button
                           onClick={() => navigate(`/cursos/${course.external_reference}`)}
-                          className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold px-6 py-2 rounded-lg transition-colors font-montserrat"
+                          className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold px-6 py-2 rounded-lg transition-colors font-montserrat w-full sm:w-auto text-sm sm:text-base whitespace-nowrap"
                         >
                           Ver Detalles
                         </button>

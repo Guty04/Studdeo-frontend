@@ -20,16 +20,16 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ user }) => {
 
   return (
     <>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold text-studdeo-violet font-league-spartan">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+        <h1 className="text-2xl sm:text-3xl font-bold text-studdeo-violet font-league-spartan">
           Bienvenido, {user?.name} {user?.lastname}
         </h1>
         {isAdmin && (
           <Button 
             onClick={() => setIsModalOpen(true)}
-            className="bg-studdeo-violet hover:bg-purple-700 text-white font-montserrat"
+            className="bg-studdeo-violet hover:bg-purple-700 text-white font-montserrat text-sm sm:text-base w-full sm:w-auto"
           >
-            <UserPlus className="w-5 h-5 mr-2" />
+            <UserPlus className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
             Crear Usuario
           </Button>
         )}

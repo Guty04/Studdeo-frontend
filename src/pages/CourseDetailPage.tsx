@@ -107,7 +107,7 @@ const CourseDetailPage: React.FC = () => {
     return (
       <div className="flex h-screen bg-gray-50">
         <SideBar />
-        <div className="flex-1 flex flex-col items-center justify-center gap-3">
+        <div className="flex-1 flex flex-col items-center justify-center gap-3 pt-16 lg:pt-0">
           <div className="w-12 h-12 border-4 border-gray-200 border-t-studdeo-violet rounded-full animate-spin"></div>
           <p className="text-gray-600 font-montserrat">Cargando...</p>
         </div>
@@ -119,7 +119,7 @@ const CourseDetailPage: React.FC = () => {
     return (
       <div className="flex h-screen bg-gray-50">
         <SideBar />
-        <div className="flex-1 flex items-center justify-center">
+        <div className="flex-1 flex items-center justify-center pt-16 lg:pt-0">
           <p className="text-gray-600 font-montserrat">Curso no encontrado</p>
         </div>
       </div>
@@ -130,38 +130,38 @@ const CourseDetailPage: React.FC = () => {
     <div className="flex h-screen bg-gray-50">
       <SideBar />
       
-      <div className="flex-1 overflow-auto">
-        <div className="p-8">
+      <div className="flex-1 overflow-auto pt-16 lg:pt-0">
+        <div className="p-4 sm:p-6 lg:p-8">
           {/* Back Button */}
           <button
             onClick={() => navigate('/cursos')}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 font-montserrat"
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 sm:mb-6 font-montserrat text-sm sm:text-base"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
             Volver a Cursos
           </button>
 
           {/* Header */}
-          <div className="flex items-start justify-between mb-8">
-            <div className="flex items-center gap-4">
-              <h1 className="text-4xl font-bold text-gray-900 font-montserrat">
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-6 sm:mb-8 gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 font-montserrat">
                 {parseCourseInfo(course.name)}
               </h1>
               <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                <Edit className="w-5 h-5 text-gray-600" />
+                <Edit className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
               </button>
             </div>
             <button
               onClick={() => setShowStudents(!showStudents)}
-              className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 font-montserrat"
+              className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 font-montserrat text-sm sm:text-base w-full sm:w-auto justify-center"
             >
-              <Users className="w-5 h-5" />
+              <Users className="w-4 h-4 sm:w-5 sm:h-5" />
               Estudiantes
             </button>
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 sm:mb-8">
             <div className="bg-white rounded-lg p-6 border border-gray-200">
               <div className="flex items-center gap-3 mb-2">
                 <Users className="w-5 h-5 text-blue-600" />
@@ -181,9 +181,9 @@ const CourseDetailPage: React.FC = () => {
 
           {/* Course Content or Students List */}
           {showStudents ? (
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 font-montserrat">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 font-montserrat">
                   Lista de Estudiantes
                 </h2>
               </div>

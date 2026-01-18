@@ -22,11 +22,10 @@ interface ProfessorData {
 interface CreateUserModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (email: string, professors: Professor[]) => void;
+  onSubmit: (professorData: ProfessorData, percentage: number) => void;
 }
 
 const CreateUserModal: React.FC<CreateUserModalProps> = ({ isOpen, onClose, onSubmit }) => {
-  const [email, setEmail] = useState('');
   const [professors, setProfessors] = useState<Professor[]>([
     { id: '1', professorId: '', percentage: 0 },
   ]);
@@ -61,10 +60,6 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ isOpen, onClose, onSu
 
   if (!isOpen) return null;
 
-  const handleAddProfessor = () => {
-    setProfessors([...professors, { id: Date.now().toString(), professorId: '', percentage: 0 }]);
-  };
-
   const handleRemoveProfessor = (id: string) => {
     if (professors.length > 1) {
       setProfessors(professors.filter((prof) => prof.id !== id));
@@ -96,7 +91,7 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ isOpen, onClose, onSu
 
   const getFilteredProfessors = (professorId: string) => {
     const searchTerm = searchTerms[professorId]?.toLowerCase() || '';
-    if (!searchTerm) return [];
+    if (!searchTerm) return availableProfessors;
     
     return availableProfessors.filter((prof) => 
       prof.name.toLowerCase().includes(searchTerm) || 
@@ -111,9 +106,24 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ isOpen, onClose, onSu
   };
 
   const handleSubmit = () => {
-    onSubmit(email, professors);
+    const professor = professors[0];
+    if (!professor.professorId || !professor.percentage) {
+      alert('Por favor completa todos los campos');
+      return;
+    }
+    
+    const selectedProf = availableProfessors.find(
+      p => p.external_reference.toString() === professor.professorId
+    );
+    
+    if (!selectedProf) {
+      alert('Profesor no encontrado');
+      return;
+    }
+    
+    onSubmit(selectedProf, professor.percentage);
+    
     // Reset form
-    setEmail('');
     setProfessors([
       { id: '1', professorId: '', percentage: 0 },
     ]);
@@ -127,7 +137,7 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ isOpen, onClose, onSu
           <div>
             <h2 className="text-2xl font-bold text-gray-900 font-montserrat">Crear Usuario</h2>
             <p className="text-sm text-gray-500 font-montserrat mt-1">
-              Asigna profesores referentes al usuario con sus respectivos porcentajes de comisión
+              Selecciona un profesor para crearle una cuenta de usuario con porcentaje de comisión
             </p>
           </div>
           <button
@@ -138,34 +148,10 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ isOpen, onClose, onSu
           </button>
         </div>
 
-        {/* Email Field */}
-        <div className="mb-6">
-          <Label htmlFor="user-email" className="text-gray-900 font-montserrat mb-2">
-            Email del Usuario
-          </Label>
-          <Input
-            id="user-email"
-            type="email"
-            placeholder="usuario@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="font-montserrat"
-          />
-        </div>
-
         {/* Professors Section */}
         <div className="mb-6">
-          <div className="flex items-center justify-between mb-4">
+          <div className="mb-4">
             <Label className="text-gray-900 font-montserrat">Profesores Referentes</Label>
-            <Button
-              type="button"
-              onClick={handleAddProfessor}
-              variant="outline"
-              className="text-studdeo-violet border-studdeo-violet hover:bg-purple-50 font-montserrat"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Agregar Profesor
-            </Button>
           </div>
 
           <div className="space-y-4">
@@ -254,7 +240,14 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ isOpen, onClose, onSu
                     max="100"
                     placeholder="0"
                     value={professor.percentage || ''}
-                    onChange={(e) => handleProfessorChange(professor.id, 'percentage', Number(e.target.value))}
+                    onChange={(e) => {
+                      const value = Number(e.target.value);
+                      if (value >= 0 && value <= 100) {
+                        handleProfessorChange(professor.id, 'percentage', value);
+                      } else if (e.target.value === '') {
+                        handleProfessorChange(professor.id, 'percentage', 0);
+                      }
+                    }}
                     className="font-montserrat"
                   />
                 </div>

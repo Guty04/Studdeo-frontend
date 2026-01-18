@@ -284,9 +284,9 @@ const SalesPage: React.FC = () => {
   }));
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50 overflow-hidden">
       <SideBar />
-      <div className="flex-1 flex flex-col pt-16 lg:pt-0">
+      <div className="flex-1 flex flex-col pt-16 lg:pt-0 overflow-hidden">
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
           {/* Header */}
           <div className="mb-6 sm:mb-8">
@@ -318,16 +318,16 @@ const SalesPage: React.FC = () => {
               {/* Stats Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
                 <Card className="border-0 shadow-sm">
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
-                        <DollarSign className="w-6 h-6 text-gray-700" />
+                  <CardContent className="p-4 sm:p-6">
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                        <DollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" />
                       </div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-600 font-montserrat mb-1">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs sm:text-sm font-medium text-gray-600 font-montserrat mb-1">
                           Ingresos Totales
                         </p>
-                        <p className="text-2xl font-bold text-gray-900 font-montserrat">
+                        <p className="text-lg sm:text-2xl font-bold text-gray-900 font-montserrat truncate">
                           $ {stats.totalIngresos.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </p>
                       </div>
@@ -336,16 +336,16 @@ const SalesPage: React.FC = () => {
                 </Card>
 
                 <Card className="border-0 shadow-sm">
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                        <CheckCircle className="w-6 h-6 text-green-600" />
+                  <CardContent className="p-4 sm:p-6">
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                        <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
                       </div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-600 font-montserrat mb-1">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs sm:text-sm font-medium text-gray-600 font-montserrat mb-1">
                           Ya Liquidado
                         </p>
-                        <p className="text-2xl font-bold text-green-600 font-montserrat">
+                        <p className="text-lg sm:text-2xl font-bold text-green-600 font-montserrat truncate">
                           $ {stats.totalLiquidado.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </p>
                       </div>
@@ -354,16 +354,16 @@ const SalesPage: React.FC = () => {
                 </Card>
 
                 <Card className="border-0 shadow-sm">
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
-                        <Clock className="w-6 h-6 text-orange-600" />
+                  <CardContent className="p-4 sm:p-6">
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
+                        <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
                       </div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-600 font-montserrat mb-1">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs sm:text-sm font-medium text-gray-600 font-montserrat mb-1">
                           Pendiente de Liquidar
                         </p>
-                        <p className="text-2xl font-bold text-orange-600 font-montserrat">
+                        <p className="text-lg sm:text-2xl font-bold text-orange-600 font-montserrat truncate">
                           $ {stats.totalPendiente.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </p>
                       </div>
@@ -520,8 +520,10 @@ const SalesPage: React.FC = () => {
                   ) : (
                     <>
                       {/* Vista Desktop - Tabla */}
-                      <div className="hidden lg:block overflow-x-auto">
-                        <table className="w-full min-w-max">
+                      <div className="hidden lg:block">
+                        <div className="overflow-x-auto -mx-4 sm:-mx-6 px-4 sm:px-6">
+                          <div className="inline-block min-w-full align-middle">
+                            <table className="min-w-full divide-y divide-gray-200">
                           <thead>
                             <tr className="border-b border-gray-200">
                               <th className="text-left py-3 px-2 xl:px-4 font-montserrat text-xs xl:text-sm font-semibold text-gray-700 whitespace-nowrap">
@@ -612,6 +614,8 @@ const SalesPage: React.FC = () => {
                             ))}
                           </tbody>
                         </table>
+                          </div>
+                        </div>
                       </div>
 
                       {/* Vista Mobile - Cards */}

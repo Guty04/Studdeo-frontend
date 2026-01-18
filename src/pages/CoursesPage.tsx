@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { BookOpen } from 'lucide-react';
 import SideBar from '../components/Dashboard/SideBar';
 import { API_BASE_URL, API_ENDPOINTS } from '../config/api';
+import { useAuth } from '../contexts/AuthContext';
 
 interface Course {
   external_reference: number;
@@ -17,6 +18,9 @@ const CoursesPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const isAdmin = user?.role_name === 'administrator';
 
   useEffect(() => {
     let isMounted = true;
@@ -24,7 +28,13 @@ const CoursesPage: React.FC = () => {
     const fetchCourses = async () => {
       try {
         const token = localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
-        const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.courses.base}`, {
+        
+        // Usar endpoint de administrador si el usuario es administrador
+        const endpoint = isAdmin 
+          ? API_ENDPOINTS.administrator.courses 
+          : API_ENDPOINTS.courses.base;
+        
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'accept': 'application/json',
@@ -53,7 +63,7 @@ const CoursesPage: React.FC = () => {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [isAdmin]);
 
   const parseCourseInfo = (courseName: string) => {
     // Parsear el nombre del curso que viene en formato: "3° Parcial Algebra - Profe Gian"

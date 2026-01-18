@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import logo from '../../assets/Studdeo.png';
+import logo from '../../assets/Studdeo_paracaidas.png';
+import logoExpanded from '../../assets/Studdeo.png';
 import { LayoutDashboard, BookOpen, DollarSign, LogOut, Menu, X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const SideBar: React.FC = () => {
@@ -25,7 +26,7 @@ const SideBar: React.FC = () => {
     <>
       {/* Mobile Header */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
-        <img src={logo} alt="Studdeo logo" className="h-10 object-contain" />
+        <img src={logoExpanded} alt="Studdeo logo" className="h-10 object-contain" />
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           className="p-2 rounded-lg hover:bg-gray-100"
@@ -60,7 +61,7 @@ const SideBar: React.FC = () => {
 
         <div className={`p-4 border-b border-gray-200 hidden lg:flex ${isCollapsed ? 'justify-center' : 'justify-center'}`}>
           <img 
-            src={logo} 
+            src={isCollapsed ? logo : logoExpanded} 
             alt="Studdeo logo" 
             className={`object-contain transition-all duration-300 ${isCollapsed ? 'w-12 h-12' : 'w-30 h-20'}`} 
           />

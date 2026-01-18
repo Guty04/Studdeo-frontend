@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import SideBar from '../components/Dashboard/SideBar';
 import DashboardHeader from '../components/Dashboard/DashboardHeader';
-import { DollarSign, CheckCircle, Clock, BookOpen } from 'lucide-react';
+import { DollarSign, CheckCircle, Clock } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/card';
 import { authenticatedFetchJSON } from '../lib/api';
 import { API_ENDPOINTS } from '../config/api';
@@ -41,42 +41,12 @@ interface CourseWithSales {
   calculated_total: number;
 }
 
-interface Lesson {
-  id: number;
-  name: string;
-  description: string;
-  external_reference: string;
-  order: number;
-}
-
-interface Student {
-  external_reference: number;
-  name: string;
-  email: string;
-  phone: string;
-}
-
-interface AdminCourse {
-  external_reference: number;
-  name: string;
-  description: string;
-  product_id: number;
-  user_id: number;
-  create_date: string;
-  students_count: number;
-  lessons_count: number;
-}
-
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const [salesData, setSalesData] = useState<CourseWithSales[]>([]);
-  const [adminCourses, setAdminCourses] = useState<AdminCourse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingSales, setIsLoadingSales] = useState(false);
-  const [isLoadingCourses, setIsLoadingCourses] = useState(false);
-  const [coursesLoaded, setCoursesLoaded] = useState(false); // Nueva bandera para saber si ya se cargaron
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'graficos' | 'cursos'>('graficos');
   
   // Filtros que se aplican automáticamente
   const [timeRange, setTimeRange] = useState<'7' | '30' | '90' | 'all'>('all');
@@ -87,7 +57,6 @@ const Dashboard: React.FC = () => {
   // Constantes de caché
   const CACHE_DURATION = 5 * 60 * 1000; // 5 minutos en milisegundos
   const SALES_CACHE_KEY = 'dashboard_sales_cache';
-  const COURSES_CACHE_KEY = 'dashboard_courses_cache';
 
   // Función para recalcular el total correcto de una venta
   const recalculateSaleTotal = (sale: Sale): number => {
@@ -160,13 +129,6 @@ const Dashboard: React.FC = () => {
     }
   }, [isAdmin]);
 
-  // Efecto para cargar cursos cuando se cambia a la tab de cursos
-  useEffect(() => {
-    if (isAdmin && activeTab === 'cursos' && !coursesLoaded) {
-      fetchCoursesData();
-    }
-  }, [isAdmin, activeTab, coursesLoaded]);
-
   const fetchSalesData = async (forceRefresh: boolean = false) => {
     // Intentar obtener del caché si no es refresh forzado
     if (!forceRefresh) {
@@ -196,79 +158,6 @@ const Dashboard: React.FC = () => {
       setSalesData([]);
     } finally {
       setIsLoadingSales(false);
-    }
-  };
-
-  const fetchCoursesData = async (forceRefresh: boolean = false) => {
-    if (coursesLoaded && !forceRefresh) return; // Evitar cargas duplicadas
-    
-    // Intentar obtener del caché si no es refresh forzado
-    if (!forceRefresh) {
-      const cachedCourses = getCachedData<AdminCourse[]>(COURSES_CACHE_KEY);
-      if (cachedCourses) {
-        setAdminCourses(cachedCourses);
-        setCoursesLoaded(true);
-        return;
-      }
-    }
-
-    setIsLoadingCourses(true);
-    try {
-      console.log('🌐 Obteniendo datos de cursos del backend...');
-      console.log('Courses endpoint:', API_ENDPOINTS.administrator.courses);
-      
-      const courses = await authenticatedFetchJSON<AdminCourse[]>(API_ENDPOINTS.administrator.courses);
-      console.log('Courses data received:', courses);
-      
-      // Enriquecer cada curso con información de estudiantes y lecciones
-      // Usamos Promise.allSettled para que si alguna petición falla, continúe con las demás
-      const enrichedCourses = await Promise.allSettled(
-        (courses || []).map(async (course) => {
-          let students_count = 0;
-          let lessons_count = 0;
-          
-          try {
-            const students = await authenticatedFetchJSON<Student[]>(
-              API_ENDPOINTS.courses.students(course.external_reference.toString())
-            );
-            students_count = students?.length || 0;
-          } catch (error) {
-            console.error(`Error al obtener estudiantes del curso ${course.external_reference}:`, error);
-          }
-          
-          try {
-            const lessons = await authenticatedFetchJSON<Lesson[]>(
-              API_ENDPOINTS.courses.lessons(course.external_reference.toString())
-            );
-            lessons_count = lessons?.length || 0;
-          } catch (error) {
-            console.error(`Error al obtener lecciones del curso ${course.external_reference}:`, error);
-          }
-          
-          return {
-            ...course,
-            students_count,
-            lessons_count,
-          };
-        })
-      );
-      
-      // Filtrar solo las promesas cumplidas y extraer sus valores
-      const successfulCourses = enrichedCourses
-        .filter((result) => result.status === 'fulfilled')
-        .map((result) => (result as PromiseFulfilledResult<AdminCourse>).value);
-      
-      setAdminCourses(successfulCourses);
-      setCoursesLoaded(true);
-      
-      // Guardar en caché
-      setCachedData(COURSES_CACHE_KEY, successfulCourses);
-    } catch (error) {
-      console.error('Error al obtener cursos:', error);
-      // Incluso si falla la petición principal, intentamos mostrar los cursos básicos si existen
-      setAdminCourses([]);
-    } finally {
-      setIsLoadingCourses(false);
     }
   };
 
@@ -524,33 +413,9 @@ const Dashboard: React.FC = () => {
                 </Card>
               </div>
 
-              {/* Tabs */}
+              {/* Gráficos de Ventas */}
               <Card>
                 <CardContent className="p-4 sm:p-6">
-                  <div className="flex gap-2 sm:gap-4 mb-6 border-b border-gray-200 overflow-x-auto">
-                    <button
-                      onClick={() => setActiveTab('graficos')}
-                      className={`px-3 sm:px-4 py-2 font-montserrat text-sm sm:text-base whitespace-nowrap ${
-                        activeTab === 'graficos'
-                          ? 'text-gray-900 border-b-2 border-gray-900'
-                          : 'text-gray-500'
-                      }`}
-                    >
-                      Gráficos de Ventas
-                    </button>
-                    <button
-                      onClick={() => setActiveTab('cursos')}
-                      className={`px-3 sm:px-4 py-2 font-montserrat text-sm sm:text-base whitespace-nowrap ${
-                        activeTab === 'cursos'
-                          ? 'text-gray-900 border-b-2 border-gray-900'
-                          : 'text-gray-500'
-                      }`}
-                    >
-                      Cursos
-                    </button>
-                  </div>
-
-                  {activeTab === 'graficos' ? (
                     <div>
                       <h3 className="text-base sm:text-lg font-semibold text-gray-900 font-montserrat mb-4">
                         Ventas en el Tiempo
@@ -645,68 +510,6 @@ const Dashboard: React.FC = () => {
                         </div>
                       )}
                     </div>
-                  ) : (
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900 font-montserrat mb-4">
-                        Todos los Cursos de la Aplicación
-                      </h3>
-                      {isLoadingCourses ? (
-                        <div className="flex flex-col items-center justify-center py-12 gap-3">
-                          <div className="w-12 h-12 border-4 border-gray-200 border-t-studdeo-violet rounded-full animate-spin"></div>
-                          <p className="text-gray-500 font-montserrat">Cargando cursos...</p>
-                        </div>
-                      ) : adminCourses.length === 0 ? (
-                        <div className="text-center py-12">
-                          <p className="text-gray-500 font-montserrat">No hay cursos registrados</p>
-                        </div>
-                      ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                          {adminCourses.map((course) => (
-                            <Card key={course.external_reference} className="border border-gray-200">
-                              <CardContent className="p-4">
-                                <div className="flex items-start gap-3">
-                                  <div className="w-10 h-10 rounded-lg bg-studdeo-violet/10 flex items-center justify-center flex-shrink-0">
-                                    <BookOpen className="w-5 h-5 text-studdeo-violet" />
-                                  </div>
-                                  <div className="flex-1 min-w-0">
-                                    <h4 className="font-semibold text-gray-900 font-montserrat text-sm mb-1 truncate">
-                                      {course.name}
-                                    </h4>
-                                    {course.description && (
-                                      <p className="text-xs text-gray-600 font-montserrat line-clamp-2 mb-2">
-                                        {course.description}
-                                      </p>
-                                    )}
-                                    <div className="flex flex-col gap-2 mt-3">
-                                      <div className="flex items-center gap-3 text-xs font-montserrat">
-                                        <div className="flex items-center gap-1.5 text-studdeo-violet">
-                                          <BookOpen className="h-3.5 w-3.5" />
-                                          <span className="font-semibold">{course.lessons_count || 0}</span>
-                                          <span className="text-gray-600">clases</span>
-                                        </div>
-                                        <div className="flex items-center gap-1.5 text-studdeo-orange">
-                                          <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                                          </svg>
-                                          <span className="font-semibold">{course.students_count || 0}</span>
-                                          <span className="text-gray-600">estudiantes</span>
-                                        </div>
-                                      </div>
-                                      <div className="flex items-center gap-2 text-xs text-gray-500">
-                                        <span>ID: {course.product_id}</span>
-                                        <span>•</span>
-                                        <span>Fecha de creación: {formatDate(course.create_date)}</span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </CardContent>
-                            </Card>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  )}
                 </CardContent>
               </Card>
             </>

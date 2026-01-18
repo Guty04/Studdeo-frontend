@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Users, BookOpen, Edit } from 'lucide-react';
 import SideBar from '../components/Dashboard/SideBar';
 import { API_BASE_URL, API_ENDPOINTS } from '../config/api';
+import { useAuth } from '../contexts/AuthContext';
 
 interface Lesson {
   external_reference: number;
@@ -27,11 +28,14 @@ interface Course {
 const CourseDetailPage: React.FC = () => {
   const { external_reference } = useParams<{ external_reference: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [course, setCourse] = useState<Course | null>(null);
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
   const [showStudents, setShowStudents] = useState(false);
+
+  const isAdmin = user?.role_name === 'administrator';
 
   useEffect(() => {
     let isMounted = true;
@@ -40,21 +44,34 @@ const CourseDetailPage: React.FC = () => {
       try {
         const token = localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
         
+        // Usar endpoints de administrador si el usuario es administrador
+        const coursesEndpoint = isAdmin 
+          ? API_ENDPOINTS.administrator.courses 
+          : API_ENDPOINTS.courses.base;
+        
+        const lessonsEndpoint = isAdmin
+          ? API_ENDPOINTS.administrator.lessons(external_reference!)
+          : API_ENDPOINTS.courses.lessons(external_reference!);
+        
+        const studentsEndpoint = isAdmin
+          ? API_ENDPOINTS.administrator.students(external_reference!)
+          : API_ENDPOINTS.courses.students(external_reference!);
+        
         // Fetch course details, lessons, and students in parallel
         const [coursesResponse, lessonsResponse, studentsResponse] = await Promise.all([
-          fetch(`${API_BASE_URL}${API_ENDPOINTS.courses.base}`, {
+          fetch(`${API_BASE_URL}${coursesEndpoint}`, {
             headers: {
               'Authorization': `Bearer ${token}`,
               'accept': 'application/json',
             },
           }),
-          fetch(`${API_BASE_URL}${API_ENDPOINTS.courses.lessons(external_reference!)}`, {
+          fetch(`${API_BASE_URL}${lessonsEndpoint}`, {
             headers: {
               'Authorization': `Bearer ${token}`,
               'accept': 'application/json',
             },
           }),
-          fetch(`${API_BASE_URL}${API_ENDPOINTS.courses.students(external_reference!)}`, {
+          fetch(`${API_BASE_URL}${studentsEndpoint}`, {
             headers: {
               'Authorization': `Bearer ${token}`,
               'accept': 'application/json',
@@ -95,7 +112,7 @@ const CourseDetailPage: React.FC = () => {
     return () => {
       isMounted = false;
     };
-  }, [external_reference]);
+  }, [external_reference, isAdmin]);
 
   const parseCourseInfo = (courseName: string) => {
     const parts = courseName.split(' - ');
@@ -155,8 +172,17 @@ const CourseDetailPage: React.FC = () => {
               onClick={() => setShowStudents(!showStudents)}
               className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 font-montserrat text-sm sm:text-base w-full sm:w-auto justify-center"
             >
-              <Users className="w-4 h-4 sm:w-5 sm:h-5" />
-              Estudiantes
+              {showStudents ? (
+                <>
+                  <BookOpen className="w-4 h-4 sm:w-5 sm:h-5" />
+                  Clases
+                </>
+              ) : (
+                <>
+                  <Users className="w-4 h-4 sm:w-5 sm:h-5" />
+                  Estudiantes
+                </>
+              )}
             </button>
           </div>
 
@@ -203,9 +229,6 @@ const CourseDetailPage: React.FC = () => {
                         <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700 font-montserrat">
                           Email
                         </th>
-                        <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700 font-montserrat">
-                          Teléfono
-                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -213,7 +236,6 @@ const CourseDetailPage: React.FC = () => {
                         <tr key={student.external_reference} className="border-b border-gray-100 hover:bg-gray-50">
                           <td className="py-3 px-4 text-gray-900 font-montserrat">{student.name}</td>
                           <td className="py-3 px-4 text-gray-600 font-montserrat">{student.emai}</td>
-                          <td className="py-3 px-4 text-gray-600 font-montserrat">{student.phone}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -223,18 +245,10 @@ const CourseDetailPage: React.FC = () => {
             </div>
           ) : (
             <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <div className="flex items-center justify-between mb-6">
+              <div className="mb-6">
                 <h2 className="text-2xl font-bold text-gray-900 font-montserrat">
                   Contenido del Curso
                 </h2>
-                <div className="flex gap-3">
-                  <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-montserrat text-sm">
-                    Agregar sección
-                  </button>
-                  <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-montserrat text-sm">
-                    Agregar contenido
-                  </button>
-                </div>
               </div>
 
               {lessons.length === 0 ? (

@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader } from './ui/card';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Button } from './ui/button';
+import { Eye, EyeOff } from 'lucide-react';
 import logo from '../assets/Studdeo.png';
 
 const LoginCard: React.FC = () => {
@@ -18,6 +19,7 @@ const LoginCard: React.FC = () => {
   const [failedAttempts, setFailedAttempts] = useState(0);
   const [lockoutTime, setLockoutTime] = useState<number | null>(null);
   const [remainingTime, setRemainingTime] = useState(0);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     const savedEmail = localStorage.getItem('login_email');
@@ -172,16 +174,30 @@ const LoginCard: React.FC = () => {
             <Label htmlFor="password" className="text-studdeo-violet font-montserrat">
               Contraseña
             </Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="•••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              disabled={lockoutTime !== null && Date.now() < lockoutTime}
-              className={`font-montserrat border-gray-300 focus:border-studdeo-violet focus:ring-studdeo-violet ${error ? 'border-red-500' : ''}`}
-            />
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="•••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                disabled={lockoutTime !== null && Date.now() < lockoutTime}
+                className={`font-montserrat border-gray-300 focus:border-studdeo-violet focus:ring-studdeo-violet pr-10 ${error ? 'border-red-500' : ''}`}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                disabled={lockoutTime !== null && Date.now() < lockoutTime}
+              >
+                {showPassword ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
+              </button>
+            </div>
             {error && (
               <div className="p-3 bg-red-50 border border-red-200 rounded-md mt-2">
                 <p className="text-sm text-red-600 font-montserrat">{error}</p>

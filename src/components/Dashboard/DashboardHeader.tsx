@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { Button } from '../ui/button';
-import { UserPlus } from 'lucide-react';
-import type { User } from '../../contexts/AuthContext';
-import CreateUserModal from './CreateUserModal';
-import { API_BASE_URL, API_ENDPOINTS } from '../../config/api';
+import { UserPlus } from "lucide-react";
+import React, { useState } from "react";
+import { API_BASE_URL, API_ENDPOINTS } from "../../config/api";
+import type { User } from "../../contexts/AuthContext";
+import { Button } from "../ui/button";
+import CreateUserModal from "./CreateUserModal";
 
 interface ProfessorData {
   external_reference: number;
@@ -19,7 +19,7 @@ interface DashboardHeaderProps {
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({ user }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const isAdmin = user?.role_name === 'administrator';
+  const isAdmin = user?.role === "administrator";
 
   // Genera contraseña segura (no se muestra en la UI)
   const generateSecurePassword = (): string => {
@@ -34,13 +34,16 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ user }) => {
     return pwd.split('').sort(() => Math.random() - 0.5).join('');
   };
 
-  const handleCreateUser = async (professorData: ProfessorData, percentage: number) => {
+  const handleCreateUser = async (
+    professorData: ProfessorData,
+    percentage: number,
+  ) => {
     setIsSubmitting(true);
     try {
       const token = localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
       
       // Separar nombre y apellido (asumiendo que el nombre tiene formato "Nombre Apellido")
-      const nameParts = professorData.name.split(' ');
+      const nameParts = professorData.name.split(" ");
       const name = nameParts[0] || professorData.name;
       const lastname = nameParts.slice(1).join(' ') || name; // Si no hay apellido, usar el nombre
       
@@ -54,30 +57,35 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ user }) => {
         id_role: 2 // ID de rol para teacher (ajustar según tu backend)
       };
 
-      console.log('Creando usuario con datos:', body);
+      console.log("Creando usuario con datos:", body);
 
-      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.user.create}`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-          'accept': 'application/json',
+      const response = await fetch(
+        `${API_BASE_URL}${API_ENDPOINTS.user.create}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            accept: "application/json",
+          },
+          body: JSON.stringify(body),
         },
-        body: JSON.stringify(body)
-      });
+      );
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.detail || 'Error al crear el usuario');
+        throw new Error(errorData.detail || "Error al crear el usuario");
       }
 
-      const result = await response.json();
+      await response.json();
       
       alert(`Usuario creado exitosamente\n\nEl profesor recibirá sus credenciales por correo electrónico a: ${professorData.email}\n\nPorcentaje asignado: ${percentage}% (se configurará próximamente)`);
       setIsModalOpen(false);
     } catch (error) {
-      console.error('Error creating user:', error);
-      alert(error instanceof Error ? error.message : 'Error al crear el usuario');
+      console.error("Error creating user:", error);
+      alert(
+        error instanceof Error ? error.message : "Error al crear el usuario",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -90,8 +98,9 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ user }) => {
           Bienvenido, {user?.name} {user?.lastname}
         </h1>
         {isAdmin && (
-          <Button 
+          <Button
             onClick={() => setIsModalOpen(true)}
+            disabled={isSubmitting}
             className="bg-studdeo-violet hover:bg-purple-700 text-white font-montserrat text-sm sm:text-base w-full sm:w-auto"
           >
             <UserPlus className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />

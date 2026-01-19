@@ -28,5 +28,8 @@ export const API_ENDPOINTS = {
   administrator: {
     courses: '/administrator/courses',
   },
+  user: {
+    create: '/users/',
+  },
   // Agregar más endpoints aquí según sea necesario
 } as const;

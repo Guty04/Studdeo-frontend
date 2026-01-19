@@ -19,7 +19,7 @@ interface DashboardHeaderProps {
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({ user }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const isAdmin = user?.role_name === "administrator";
+  const isAdmin = user?.role === "administrator";
 
   // Función para generar contraseña aleatoria de 8 caracteres con al menos una mayúscula
   const generatePassword = () => {

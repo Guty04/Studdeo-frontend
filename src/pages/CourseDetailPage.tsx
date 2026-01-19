@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Users, BookOpen, Edit } from 'lucide-react';
-import SideBar from '../components/Dashboard/SideBar';
-import { API_BASE_URL, API_ENDPOINTS } from '../config/api';
-import { useAuth } from '../contexts/AuthContext';
+import { ArrowLeft, BookOpen, Edit, Users } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import SideBar from "../components/Dashboard/SideBar";
+import { API_BASE_URL, API_ENDPOINTS } from "../config/api";
+import { useAuth } from "../contexts/AuthContext";
 
 interface Lesson {
   external_reference: number;
@@ -35,52 +35,59 @@ const CourseDetailPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [showStudents, setShowStudents] = useState(false);
 
-  const isAdmin = user?.role_name === 'administrator';
+  const isAdmin = user?.role === "administrator";
 
   useEffect(() => {
     let isMounted = true;
 
     const fetchCourseData = async () => {
       try {
-        const token = localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
-        
+        const token =
+          localStorage.getItem("access_token") ||
+          sessionStorage.getItem("access_token");
+
         // Usar endpoints de administrador si el usuario es administrador
-        const coursesEndpoint = isAdmin 
-          ? API_ENDPOINTS.administrator.courses 
+        const coursesEndpoint = isAdmin
+          ? API_ENDPOINTS.administrator.courses
           : API_ENDPOINTS.courses.base;
-        
+
         const lessonsEndpoint = isAdmin
           ? API_ENDPOINTS.administrator.lessons(external_reference!)
           : API_ENDPOINTS.courses.lessons(external_reference!);
-        
+
         const studentsEndpoint = isAdmin
           ? API_ENDPOINTS.administrator.students(external_reference!)
           : API_ENDPOINTS.courses.students(external_reference!);
-        
-        // Fetch course details, lessons, and students in parallel
-        const [coursesResponse, lessonsResponse, studentsResponse] = await Promise.all([
-          fetch(`${API_BASE_URL}${coursesEndpoint}`, {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'accept': 'application/json',
-            },
-          }),
-          fetch(`${API_BASE_URL}${lessonsEndpoint}`, {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'accept': 'application/json',
-            },
-          }),
-          fetch(`${API_BASE_URL}${studentsEndpoint}`, {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'accept': 'application/json',
-            },
-          }),
-        ]);
 
-        if (!coursesResponse.ok || !lessonsResponse.ok || !studentsResponse.ok) {
-          throw new Error('Error al cargar los datos del curso');
+        // Fetch course details, lessons, and students in parallel
+        const [coursesResponse, lessonsResponse, studentsResponse] =
+          await Promise.all([
+            fetch(`${API_BASE_URL}${coursesEndpoint}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                accept: "application/json",
+              },
+            }),
+            fetch(`${API_BASE_URL}${lessonsEndpoint}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                accept: "application/json",
+              },
+            }),
+            fetch(`${API_BASE_URL}${studentsEndpoint}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                accept: "application/json",
+              },
+            }),
+          ]);
+
+        if (
+          !coursesResponse.ok ||
+          !lessonsResponse.ok ||
+          !studentsResponse.ok
+        ) {
+          throw new Error("Error al cargar los datos del curso");
         }
 
         const [coursesData, lessonsData, studentsData] = await Promise.all([
@@ -92,14 +99,15 @@ const CourseDetailPage: React.FC = () => {
         if (isMounted) {
           // Find the specific course
           const foundCourse = coursesData.find(
-            (c: Course) => c.external_reference === parseInt(external_reference!)
+            (c: Course) =>
+              c.external_reference === parseInt(external_reference!),
           );
           setCourse(foundCourse || null);
           setLessons(lessonsData);
           setStudents(studentsData);
         }
       } catch (error) {
-        console.error('Error fetching course data:', error);
+        console.error("Error fetching course data:", error);
       } finally {
         if (isMounted) {
           setLoading(false);
@@ -115,7 +123,7 @@ const CourseDetailPage: React.FC = () => {
   }, [external_reference, isAdmin]);
 
   const parseCourseInfo = (courseName: string) => {
-    const parts = courseName.split(' - ');
+    const parts = courseName.split(" - ");
     const courseTitle = parts[0] || courseName;
     return courseTitle;
   };
@@ -146,12 +154,12 @@ const CourseDetailPage: React.FC = () => {
   return (
     <div className="flex h-screen bg-gray-50">
       <SideBar />
-      
+
       <div className="flex-1 overflow-auto pt-16 lg:pt-0">
         <div className="p-4 sm:p-6 lg:p-8">
           {/* Back Button */}
           <button
-            onClick={() => navigate('/cursos')}
+            onClick={() => navigate("/cursos")}
             className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 sm:mb-6 font-montserrat text-sm sm:text-base"
           >
             <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -191,9 +199,13 @@ const CourseDetailPage: React.FC = () => {
             <div className="bg-white rounded-lg p-6 border border-gray-200">
               <div className="flex items-center gap-3 mb-2">
                 <Users className="w-5 h-5 text-blue-600" />
-                <p className="text-sm text-gray-600 font-montserrat">Estudiantes</p>
+                <p className="text-sm text-gray-600 font-montserrat">
+                  Estudiantes
+                </p>
               </div>
-              <p className="text-3xl font-bold text-gray-900 font-montserrat">{students.length}</p>
+              <p className="text-3xl font-bold text-gray-900 font-montserrat">
+                {students.length}
+              </p>
             </div>
 
             <div className="bg-white rounded-lg p-6 border border-gray-200">
@@ -201,7 +213,9 @@ const CourseDetailPage: React.FC = () => {
                 <BookOpen className="w-5 h-5 text-purple-600" />
                 <p className="text-sm text-gray-600 font-montserrat">Clases</p>
               </div>
-              <p className="text-3xl font-bold text-gray-900 font-montserrat">{lessons.length}</p>
+              <p className="text-3xl font-bold text-gray-900 font-montserrat">
+                {lessons.length}
+              </p>
             </div>
           </div>
 
@@ -213,7 +227,7 @@ const CourseDetailPage: React.FC = () => {
                   Lista de Estudiantes
                 </h2>
               </div>
-              
+
               {students.length === 0 ? (
                 <p className="text-gray-600 font-montserrat text-center py-8">
                   No hay estudiantes inscritos en este curso
@@ -233,9 +247,16 @@ const CourseDetailPage: React.FC = () => {
                     </thead>
                     <tbody>
                       {students.map((student) => (
-                        <tr key={student.external_reference} className="border-b border-gray-100 hover:bg-gray-50">
-                          <td className="py-3 px-4 text-gray-900 font-montserrat">{student.name}</td>
-                          <td className="py-3 px-4 text-gray-600 font-montserrat">{student.emai}</td>
+                        <tr
+                          key={student.external_reference}
+                          className="border-b border-gray-100 hover:bg-gray-50"
+                        >
+                          <td className="py-3 px-4 text-gray-900 font-montserrat">
+                            {student.name}
+                          </td>
+                          <td className="py-3 px-4 text-gray-600 font-montserrat">
+                            {student.emai}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -267,8 +288,13 @@ const CourseDetailPage: React.FC = () => {
                     </thead>
                     <tbody>
                       {lessons.map((lesson) => (
-                        <tr key={lesson.external_reference} className="border-b border-gray-100 hover:bg-gray-50">
-                          <td className="py-3 px-4 text-gray-900 font-montserrat">{lesson.name}</td>
+                        <tr
+                          key={lesson.external_reference}
+                          className="border-b border-gray-100 hover:bg-gray-50"
+                        >
+                          <td className="py-3 px-4 text-gray-900 font-montserrat">
+                            {lesson.name}
+                          </td>
                         </tr>
                       ))}
                     </tbody>

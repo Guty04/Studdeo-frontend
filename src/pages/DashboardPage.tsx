@@ -1,12 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import SideBar from '../components/Dashboard/SideBar';
-import DashboardHeader from '../components/Dashboard/DashboardHeader';
-import { DollarSign, CheckCircle, Clock } from 'lucide-react';
-import { Card, CardContent } from '../components/ui/card';
-import { authenticatedFetchJSON } from '../lib/api';
-import { API_ENDPOINTS } from '../config/api';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { CheckCircle, Clock, DollarSign } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import {
+  CartesianGrid,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import DashboardHeader from "../components/Dashboard/DashboardHeader";
+import SideBar from "../components/Dashboard/SideBar";
+import { Card, CardContent } from "../components/ui/card";
+import { API_ENDPOINTS } from "../config/api";
+import { useAuth } from "../contexts/AuthContext";
+import { authenticatedFetchJSON } from "../lib/api";
 
 interface Buyer {
   external_reference: number;
@@ -47,38 +55,43 @@ const Dashboard: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingSales, setIsLoadingSales] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
-  // Filtros que se aplican automáticamente
-  const [timeRange, setTimeRange] = useState<'7' | '30' | '90' | 'all'>('all');
-  const [courseFilter, setCourseFilter] = useState<string>('all');
 
-  const isAdmin = user?.role_name === 'administrator';
+  // Filtros que se aplican automáticamente
+  const [timeRange, setTimeRange] = useState<"7" | "30" | "90" | "all">("all");
+  const [courseFilter, setCourseFilter] = useState<string>("all");
+
+  const isAdmin = user?.role === "administrator";
 
   // Constantes de caché
   const CACHE_DURATION = 5 * 60 * 1000; // 5 minutos en milisegundos
-  const SALES_CACHE_KEY = 'dashboard_sales_cache';
+  const SALES_CACHE_KEY = "dashboard_sales_cache";
 
   // Función para recalcular el total correcto de una venta
   const recalculateSaleTotal = (sale: Sale): number => {
-    const subtotal = sale.details_sale.reduce((sum, detail) => 
-      sum + (detail.price * detail.quantity), 0
+    const subtotal = sale.details_sale.reduce(
+      (sum, detail) => sum + detail.price * detail.quantity,
+      0,
     );
     return subtotal + sale.discount; // discount es negativo para descuentos
   };
 
   // Función para validar y corregir totales de ventas
-  const validateAndFixSalesData = (courses: CourseWithSales[]): CourseWithSales[] => {
-    return courses.map(course => ({
+  const validateAndFixSalesData = (
+    courses: CourseWithSales[],
+  ): CourseWithSales[] => {
+    return courses.map((course) => ({
       ...course,
-      sales: course.sales.map(sale => {
+      sales: course.sales.map((sale) => {
         const calculatedTotal = recalculateSaleTotal(sale);
         // Si el total es incorrecto, usar el calculado
         if (Math.abs(sale.total - calculatedTotal) > 0.01) {
-          console.warn(`⚠️ Total incorrecto en venta ${sale.external_reference}. Backend: ${sale.total}, Calculado: ${calculatedTotal}`);
+          console.warn(
+            `⚠️ Total incorrecto en venta ${sale.external_reference}. Backend: ${sale.total}, Calculado: ${calculatedTotal}`,
+          );
           return { ...sale, total: calculatedTotal };
         }
         return sale;
-      })
+      }),
     }));
   };
 
@@ -87,21 +100,21 @@ const Dashboard: React.FC = () => {
     try {
       const cached = sessionStorage.getItem(key);
       if (!cached) return null;
-      
+
       const { data, timestamp } = JSON.parse(cached);
       const now = Date.now();
-      
+
       // Verificar si el caché es válido (no ha expirado)
       if (now - timestamp < CACHE_DURATION) {
         console.log(`✅ Usando datos del caché para ${key}`);
         return data as T;
       }
-      
+
       // Caché expirado, eliminar
       sessionStorage.removeItem(key);
       return null;
     } catch (error) {
-      console.error('Error al leer del caché:', error);
+      console.error("Error al leer del caché:", error);
       return null;
     }
   };
@@ -111,12 +124,12 @@ const Dashboard: React.FC = () => {
     try {
       const cacheData = {
         data,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
       sessionStorage.setItem(key, JSON.stringify(cacheData));
       console.log(`💾 Datos guardados en caché para ${key}`);
     } catch (error) {
-      console.error('Error al guardar en caché:', error);
+      console.error("Error al guardar en caché:", error);
     }
   };
 
@@ -141,20 +154,22 @@ const Dashboard: React.FC = () => {
 
     setIsLoadingSales(true);
     try {
-      console.log('🌐 Obteniendo datos de ventas del backend...');
-      console.log('Sales endpoint:', API_ENDPOINTS.sales.base);
-      
-      const sales = await authenticatedFetchJSON<CourseWithSales[]>(API_ENDPOINTS.sales.base);
-      console.log('Sales data received:', sales);
-      
+      console.log("🌐 Obteniendo datos de ventas del backend...");
+      console.log("Sales endpoint:", API_ENDPOINTS.sales.base);
+
+      const sales = await authenticatedFetchJSON<CourseWithSales[]>(
+        API_ENDPOINTS.sales.base,
+      );
+      console.log("Sales data received:", sales);
+
       // Validar y corregir totales antes de guardar
       const validatedSales = validateAndFixSalesData(sales || []);
       setSalesData(validatedSales);
-      
+
       // Guardar en caché
       setCachedData(SALES_CACHE_KEY, validatedSales);
     } catch (error) {
-      console.error('Error al obtener ventas:', error);
+      console.error("Error al obtener ventas:", error);
       setSalesData([]);
     } finally {
       setIsLoadingSales(false);
@@ -164,7 +179,7 @@ const Dashboard: React.FC = () => {
   const fetchInitialData = async () => {
     setIsLoading(true);
     setError(null);
-    
+
     // Solo cargar ventas inicialmente para mostrar la página más rápido
     await fetchSalesData();
 
@@ -176,7 +191,9 @@ const Dashboard: React.FC = () => {
     const date = new Date(saleDate);
     date.setDate(date.getDate() + 15);
     const today = new Date();
-    const daysRemaining = Math.ceil((date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    const daysRemaining = Math.ceil(
+      (date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
+    );
     return {
       isPending: daysRemaining > 0,
     };
@@ -185,17 +202,19 @@ const Dashboard: React.FC = () => {
   // Cálculos de estadísticas para administrador
   const calculateAdminStats = () => {
     // Sumar todos los totales de cada venta
-    const totalIngresos = salesData.reduce((sum, course) => 
-      sum + course.sales.reduce((salesSum, sale) => salesSum + sale.total, 0), 0
+    const totalIngresos = salesData.reduce(
+      (sum, course) =>
+        sum + course.sales.reduce((salesSum, sale) => salesSum + sale.total, 0),
+      0,
     );
-    
+
     let totalLiquidado = 0;
     let totalPendiente = 0;
 
     salesData.forEach((course) => {
       course.sales.forEach((sale) => {
-        const yourIncome = sale.total * 0.80; // 80% para el vendedor
-        
+        const yourIncome = sale.total * 0.8; // 80% para el vendedor
+
         const liquidationInfo = calculateLiquidationDate(sale.date);
         if (liquidationInfo.isPending) {
           totalPendiente += yourIncome;
@@ -208,12 +227,14 @@ const Dashboard: React.FC = () => {
     return { totalIngresos, totalLiquidado, totalPendiente };
   };
 
-  const stats = isAdmin ? calculateAdminStats() : { totalIngresos: 0, totalLiquidado: 0, totalPendiente: 0 };
+  const stats = isAdmin
+    ? calculateAdminStats()
+    : { totalIngresos: 0, totalLiquidado: 0, totalPendiente: 0 };
 
   // Formatear fecha para gráfico
   const formatDateForChart = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+    return date.toLocaleDateString("es-ES", { day: "numeric", month: "short" });
   };
 
   // Preparar datos para el gráfico por fecha con filtros
@@ -221,40 +242,54 @@ const Dashboard: React.FC = () => {
     // Usar la fecha actual como referencia
     const now = new Date();
     let cutoffDate = new Date(0);
-    
+
     // Calcular fecha límite según el filtro de tiempo
-    if (timeRange === '7') {
+    if (timeRange === "7") {
       cutoffDate = new Date(now);
       cutoffDate.setDate(now.getDate() - 7);
-    } else if (timeRange === '30') {
+    } else if (timeRange === "30") {
       cutoffDate = new Date(now);
       cutoffDate.setDate(now.getDate() - 30);
-    } else if (timeRange === '90') {
+    } else if (timeRange === "90") {
       cutoffDate = new Date(now);
       cutoffDate.setDate(now.getDate() - 90);
     }
 
-    const salesByDate: { [key: string]: { date: string, fullDate: string, amount: number, rawDate: Date } } = {};
+    const salesByDate: {
+      [key: string]: {
+        date: string;
+        fullDate: string;
+        amount: number;
+        rawDate: Date;
+      };
+    } = {};
 
     salesData.forEach((course) => {
       // Filtro por curso si está seleccionado
-      if (courseFilter !== 'all' && course.external_reference.toString() !== courseFilter) {
+      if (
+        courseFilter !== "all" &&
+        course.external_reference.toString() !== courseFilter
+      ) {
         return;
       }
 
       course.sales.forEach((sale) => {
         const saleDate = new Date(sale.date);
-        
+
         // Filtro por fecha
         if (saleDate < cutoffDate) {
           return;
         }
 
-        const dateKey = saleDate.toISOString().split('T')[0]; // YYYY-MM-DD
+        const dateKey = saleDate.toISOString().split("T")[0]; // YYYY-MM-DD
         const formattedDate = formatDateForChart(sale.date);
-        const fullDate = saleDate.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+        const fullDate = saleDate.toLocaleDateString("es-ES", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        });
         const income = sale.total; // Mostrar el total real
-        
+
         if (salesByDate[dateKey]) {
           salesByDate[dateKey].amount += income;
         } else {
@@ -262,7 +297,7 @@ const Dashboard: React.FC = () => {
             date: formattedDate,
             fullDate: fullDate,
             amount: income,
-            rawDate: saleDate
+            rawDate: saleDate,
           };
         }
       });
@@ -271,13 +306,17 @@ const Dashboard: React.FC = () => {
     // Convertir a array y ordenar por fecha
     return Object.values(salesByDate)
       .sort((a, b) => a.rawDate.getTime() - b.rawDate.getTime())
-      .map(({ date, fullDate, amount }) => ({ date, fullDate, ventas: amount }));
+      .map(({ date, fullDate, amount }) => ({
+        date,
+        fullDate,
+        ventas: amount,
+      }));
   };
 
   const chartData = prepareSalesChartData();
 
   // Custom tooltip para mostrar fecha completa con año
-  const CustomTooltip = ({ active, payload }: any ) => { 
+  const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-lg">
@@ -285,8 +324,13 @@ const Dashboard: React.FC = () => {
             {payload[0].payload.fullDate}
           </p>
           <p className="text-sm text-gray-700 font-montserrat">
-            Ventas: <span className="font-semibold text-studdeo-violet">
-              ${payload[0].value.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            Ventas:{" "}
+            <span className="font-semibold text-studdeo-violet">
+              $
+              {payload[0].value.toLocaleString("es-AR", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
             </span>
           </p>
         </div>
@@ -298,7 +342,11 @@ const Dashboard: React.FC = () => {
   // Formatear fecha completa para otros usos
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    return date.toLocaleDateString("es-ES", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
   };
 
   // Obtener lista única de cursos para el filtro
@@ -346,7 +394,9 @@ const Dashboard: React.FC = () => {
             </div>
           ) : error ? (
             <div className="flex flex-col items-center justify-center h-64">
-              <p className="text-red-600 font-montserrat text-lg mb-4">{error}</p>
+              <p className="text-red-600 font-montserrat text-lg mb-4">
+                {error}
+              </p>
               <button
                 onClick={fetchInitialData}
                 className="px-4 py-2 bg-studdeo-violet text-white rounded-lg font-montserrat hover:bg-opacity-90"
@@ -369,7 +419,11 @@ const Dashboard: React.FC = () => {
                           Ingresos Totales
                         </p>
                         <p className="text-2xl font-bold text-gray-900 font-montserrat">
-                          $ {stats.totalIngresos.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          ${" "}
+                          {stats.totalIngresos.toLocaleString("es-AR", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
                         </p>
                       </div>
                     </div>
@@ -387,7 +441,11 @@ const Dashboard: React.FC = () => {
                           Ya Liquidado
                         </p>
                         <p className="text-2xl font-bold text-green-600 font-montserrat">
-                          $ {stats.totalLiquidado.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          ${" "}
+                          {stats.totalLiquidado.toLocaleString("es-AR", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
                         </p>
                       </div>
                     </div>
@@ -405,7 +463,11 @@ const Dashboard: React.FC = () => {
                           Pendiente de Liquidar
                         </p>
                         <p className="text-2xl font-bold text-orange-600 font-montserrat">
-                          $ {stats.totalPendiente.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          ${" "}
+                          {stats.totalPendiente.toLocaleString("es-AR", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
                         </p>
                       </div>
                     </div>
@@ -416,100 +478,120 @@ const Dashboard: React.FC = () => {
               {/* Gráficos de Ventas */}
               <Card>
                 <CardContent className="p-4 sm:p-6">
-                    <div>
-                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 font-montserrat mb-4">
-                        Ventas en el Tiempo
-                      </h3>
-                      
-                      {/* Filtros del gráfico */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 font-montserrat mb-2">
-                            Período de tiempo
-                          </label>
-                          <select
-                            value={timeRange}
-                            onChange={(e) => setTimeRange(e.target.value as '7' | '30' | '90' | 'all')}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md font-montserrat focus:outline-none focus:ring-2 focus:ring-studdeo-violet"
-                          >
-                            <option value="all">Todo el tiempo</option>
-                            <option value="7">Últimos 7 días</option>
-                            <option value="30">Últimos 30 días</option>
-                            <option value="90">Últimos 90 días</option>
-                          </select>
-                        </div>
+                  <div>
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 font-montserrat mb-4">
+                      Ventas en el Tiempo
+                    </h3>
 
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 font-montserrat mb-2">
-                            Filtrar por curso
-                          </label>
-                          <select
-                            value={courseFilter}
-                            onChange={(e) => setCourseFilter(e.target.value)}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md font-montserrat focus:outline-none focus:ring-2 focus:ring-studdeo-violet"
-                          >
-                            <option value="all">Todos los cursos</option>
-                            {uniqueCourses.map((course) => (
-                              <option key={course.id} value={course.id.toString()}>
-                                {course.name}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-
-                        <div className="flex items-end">
-                          <button
-                            onClick={() => {
-                              sessionStorage.removeItem(SALES_CACHE_KEY);
-                              fetchSalesData(true);
-                            }}
-                            disabled={isLoadingSales}
-                            className="w-full px-4 py-2 bg-gray-600 text-white rounded-md font-montserrat hover:bg-opacity-90 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                          >
-                            {isLoadingSales && (
-                              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                            )}
-                            {isLoadingSales ? 'Cargando...' : 'Actualizar datos'}
-                          </button>
-                        </div>
+                    {/* Filtros del gráfico */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 font-montserrat mb-2">
+                          Período de tiempo
+                        </label>
+                        <select
+                          value={timeRange}
+                          onChange={(e) =>
+                            setTimeRange(
+                              e.target.value as "7" | "30" | "90" | "all",
+                            )
+                          }
+                          className="w-full px-4 py-2 border border-gray-300 rounded-md font-montserrat focus:outline-none focus:ring-2 focus:ring-studdeo-violet"
+                        >
+                          <option value="all">Todo el tiempo</option>
+                          <option value="7">Últimos 7 días</option>
+                          <option value="30">Últimos 30 días</option>
+                          <option value="90">Últimos 90 días</option>
+                        </select>
                       </div>
 
-                      {chartData.length === 0 ? (
-                        <div className="text-center py-12">
-                          <p className="text-gray-500 font-montserrat">No hay datos de ventas para el período seleccionado</p>
-                        </div>
-                      ) : (
-                        <div className="w-full h-96">
-                          <ResponsiveContainer width="100%" height="100%">
-                            <LineChart
-                              data={chartData}
-                              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 font-montserrat mb-2">
+                          Filtrar por curso
+                        </label>
+                        <select
+                          value={courseFilter}
+                          onChange={(e) => setCourseFilter(e.target.value)}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-md font-montserrat focus:outline-none focus:ring-2 focus:ring-studdeo-violet"
+                        >
+                          <option value="all">Todos los cursos</option>
+                          {uniqueCourses.map((course) => (
+                            <option
+                              key={course.id}
+                              value={course.id.toString()}
                             >
-                              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                              <XAxis
-                                dataKey="date"
-                                stroke="#6b7280"
-                                style={{ fontSize: '12px', fontFamily: 'Montserrat' }}
-                              />
-                              <YAxis
-                                stroke="#6b7280"
-                                style={{ fontSize: '12px', fontFamily: 'Montserrat' }}
-                                tickFormatter={(value) => `$${value.toLocaleString('es-AR', { maximumFractionDigits: 0 })}`}
-                              />
-                              <Tooltip content={<CustomTooltip />} />
-                              <Line
-                                type="monotone"
-                                dataKey="ventas"
-                                stroke="#7c3aed"
-                                strokeWidth={2}
-                                dot={{ fill: '#7c3aed', strokeWidth: 2, r: 4 }}
-                                activeDot={{ r: 6 }}
-                              />
-                            </LineChart>
-                          </ResponsiveContainer>
-                        </div>
-                      )}
+                              {course.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="flex items-end">
+                        <button
+                          onClick={() => {
+                            sessionStorage.removeItem(SALES_CACHE_KEY);
+                            fetchSalesData(true);
+                          }}
+                          disabled={isLoadingSales}
+                          className="w-full px-4 py-2 bg-gray-600 text-white rounded-md font-montserrat hover:bg-opacity-90 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        >
+                          {isLoadingSales && (
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          )}
+                          {isLoadingSales ? "Cargando..." : "Actualizar datos"}
+                        </button>
+                      </div>
                     </div>
+
+                    {chartData.length === 0 ? (
+                      <div className="text-center py-12">
+                        <p className="text-gray-500 font-montserrat">
+                          No hay datos de ventas para el período seleccionado
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="w-full h-96">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <LineChart
+                            data={chartData}
+                            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                          >
+                            <CartesianGrid
+                              strokeDasharray="3 3"
+                              stroke="#e5e7eb"
+                            />
+                            <XAxis
+                              dataKey="date"
+                              stroke="#6b7280"
+                              style={{
+                                fontSize: "12px",
+                                fontFamily: "Montserrat",
+                              }}
+                            />
+                            <YAxis
+                              stroke="#6b7280"
+                              style={{
+                                fontSize: "12px",
+                                fontFamily: "Montserrat",
+                              }}
+                              tickFormatter={(value) =>
+                                `$${value.toLocaleString("es-AR", { maximumFractionDigits: 0 })}`
+                              }
+                            />
+                            <Tooltip content={<CustomTooltip />} />
+                            <Line
+                              type="monotone"
+                              dataKey="ventas"
+                              stroke="#7c3aed"
+                              strokeWidth={2}
+                              dot={{ fill: "#7c3aed", strokeWidth: 2, r: 4 }}
+                              activeDot={{ r: 6 }}
+                            />
+                          </LineChart>
+                        </ResponsiveContainer>
+                      </div>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             </>

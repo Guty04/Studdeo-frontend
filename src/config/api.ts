@@ -4,7 +4,7 @@
  */
 
 // URL base de la API - cambiar aquí para todos los entornos
-export const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://protective-manifestation-production.up.railway.app';
+export const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://backend-production-cb5f.up.railway.app';
 
 /**
  * Endpoints de la API

@@ -21,25 +21,17 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ user }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isAdmin = user?.role_name === 'administrator';
 
-  // Función para generar contraseña aleatoria de 8 caracteres con al menos una mayúscula
-  const generatePassword = () => {
-    const lowercase = 'abcdefghijklmnopqrstuvwxyz';
-    const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const numbers = '0123456789';
-    const allChars = lowercase + uppercase + numbers;
-    
-    let password = '';
-    
-    // Asegurar al menos una mayúscula
-    password += uppercase.charAt(Math.floor(Math.random() * uppercase.length));
-    
-    // Completar con 7 caracteres aleatorios
+  // Genera contraseña segura (no se muestra en la UI)
+  const generateSecurePassword = (): string => {
+    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const entropy = crypto.randomUUID() + Date.now().toString(36) + Math.random().toString(36);
+    let pwd = upper[Math.floor(Math.random() * upper.length)];
     for (let i = 0; i < 7; i++) {
-      password += allChars.charAt(Math.floor(Math.random() * allChars.length));
+      const idx = (entropy.charCodeAt(i) * Date.now()) % chars.length;
+      pwd += chars[idx];
     }
-    
-    // Mezclar los caracteres
-    return password.split('').sort(() => Math.random() - 0.5).join('');
+    return pwd.split('').sort(() => Math.random() - 0.5).join('');
   };
 
   const handleCreateUser = async (professorData: ProfessorData, percentage: number) => {
@@ -47,13 +39,10 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ user }) => {
     try {
       const token = localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
       
-      // Generar contraseña provisional
-      const provisionalPassword = generatePassword();
-      
       // Separar nombre y apellido (asumiendo que el nombre tiene formato "Nombre Apellido")
       const nameParts = professorData.name.split(' ');
       const name = nameParts[0] || professorData.name;
-      const lastname = nameParts.slice(1).join(' ') || '';
+      const lastname = nameParts.slice(1).join(' ') || name; // Si no hay apellido, usar el nombre
       
       // Construir el body según el formato requerido
       const body = {
@@ -61,7 +50,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ user }) => {
         lastname: lastname,
         email: professorData.email,
         role_name: 'teacher',
-        password: provisionalPassword,
+        password: generateSecurePassword(),
         id_role: 2 // ID de rol para teacher (ajustar según tu backend)
       };
 
@@ -83,9 +72,8 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ user }) => {
       }
 
       const result = await response.json();
-      console.log('Usuario creado:', result);
       
-      alert(`Usuario creado exitosamente\nEmail: ${professorData.email}\nContraseña provisional: ${provisionalPassword}\n\nPorcentaje asignado: ${percentage}% (se configurará próximamente)`);
+      alert(`Usuario creado exitosamente\n\nEl profesor recibirá sus credenciales por correo electrónico a: ${professorData.email}\n\nPorcentaje asignado: ${percentage}% (se configurará próximamente)`);
       setIsModalOpen(false);
     } catch (error) {
       console.error('Error creating user:', error);

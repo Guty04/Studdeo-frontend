@@ -201,7 +201,7 @@ const Dashboard: React.FC = () => {
 
   // Cálculos de estadísticas
   const calculateStats = () => {
-    // Ingresos totales: suma directa de todos los totales del backend
+    // Sumar todas las ventas incluyendo duplicados (mismas ventas en múltiples cursos)
     const totalIngresos = salesData.reduce(
       (sum, course) =>
         sum + course.sales.reduce((salesSum, sale) => salesSum + sale.total, 0),

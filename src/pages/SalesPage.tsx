@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { DollarSign, CheckCircle, Clock, ChevronRight, RefreshCw, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+import { DollarSign, CheckCircle, Clock, RefreshCw, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import SideBar from '../components/Dashboard/SideBar';
 import { Card, CardContent } from '../components/ui/card';
 import { authenticatedFetchJSON } from '../lib/api';
@@ -59,6 +59,7 @@ interface TableRow {
     isPending: boolean;
   };
   courseId: number;
+  saleId: number; // ID único de la venta para evitar duplicados
 }
 
 const SalesPage: React.FC = () => {
@@ -72,8 +73,6 @@ const SalesPage: React.FC = () => {
   const [dateRange, setDateRange] = useState<'7' | '30' | '90' | 'custom' | 'all'>('all');
   const [customDateFrom, setCustomDateFrom] = useState<string>('');
   const [customDateTo, setCustomDateTo] = useState<string>('');
-  const [selectedBuyer, setSelectedBuyer] = useState<Buyer | null>(null);
-  const [isBuyerModalOpen, setIsBuyerModalOpen] = useState(false);
   const [sortColumn, setSortColumn] = useState<'date' | 'totalAmount' | 'discount' | 'mpCommission' | 'contractDiscount' | 'yourIncome' | 'liquidation' | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
@@ -138,9 +137,7 @@ const SalesPage: React.FC = () => {
       const salesEndpoint = isAdmin 
         ? API_ENDPOINTS.administrator.sales 
         : API_ENDPOINTS.sales.base;
-      console.log('Endpoint usado:', salesEndpoint);
       const data = await authenticatedFetchJSON<CourseWithSales[]>(salesEndpoint);
-      console.log('Datos de ventas recibidos:', data);
       setSalesData(data || []);
       
       // Guardar en cache compartido
@@ -199,16 +196,6 @@ const SalesPage: React.FC = () => {
       const afterMPCommission = totalAmount - mpCommission;
       const yourIncome = afterMPCommission * sale.contract_discount; // Usar contract_discount del backend
       
-      // Log para debug
-      if (sale.discount !== 0) {
-        console.log('Venta con descuento:', {
-          curso: course.name,
-          precioOriginal: sale.details_sale[0]?.price,
-          descuento: sale.discount,
-          total: sale.total
-        });
-      }
-      
       return {
         date: sale.date,
         courseName: course.name,
@@ -220,6 +207,7 @@ const SalesPage: React.FC = () => {
         yourIncome: yourIncome,
         liquidation: calculateLiquidationDate(sale.date),
         courseId: course.external_reference,
+        saleId: sale.external_reference, // Añadir ID único de la venta
       };
     })
   );
@@ -269,23 +257,32 @@ const SalesPage: React.FC = () => {
     return matchesCourse && matchesCourseName && matchesDateRange && matchesTab;
   });
 
-  // Cálculos de estadísticas basados en datos filtrados visibles en la tabla
+  // Cálculos de estadísticas sobre TODOS los datos (sin filtros)
   const calculateStats = () => {
-    let totalIngresos = 0; // Suma de todos los totales del backend
+    // Total general: suma de todos los sale.total de todos los cursos
+    const totalIngresos = salesData.reduce(
+      (sum, course) =>
+        sum + course.sales.reduce((salesSum, sale) => salesSum + sale.total, 0),
+      0,
+    );
+
     let totalLiquidado = 0; // Ganancia real del profesor (liquidado)
     let totalPendiente = 0; // Ganancia real del profesor (pendiente)
 
-    // Usar filteredData para que las stats coincidan con lo que se ve en la tabla
-    filteredData.forEach((row) => {
-      // Ingresos totales: suma directa del total del backend
-      totalIngresos += row.totalAmount;
-      
-      // Ganancia del profesor (ya calculada en tableData)
-      if (row.liquidation.isPending) {
-        totalPendiente += row.yourIncome;
-      } else {
-        totalLiquidado += row.yourIncome;
-      }
+    // Calcular liquidado/pendiente sobre todos los datos
+    salesData.forEach((course) => {
+      course.sales.forEach((sale) => {
+        const mpCommission = sale.total * 0.043;
+        const afterMPCommission = sale.total - mpCommission;
+        const yourIncome = afterMPCommission * sale.contract_discount;
+        
+        const liquidationInfo = calculateLiquidationDate(sale.date);
+        if (liquidationInfo.isPending) {
+          totalPendiente += yourIncome;
+        } else {
+          totalLiquidado += yourIncome;
+        }
+      });
     });
 
     return { totalIngresos, totalLiquidado, totalPendiente };
@@ -840,50 +837,6 @@ const SalesPage: React.FC = () => {
           )}
         </main>
       </div>
-
-      {/* Modal de información del comprador */}
-      {isBuyerModalOpen && selectedBuyer && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setIsBuyerModalOpen(false)}>
-          <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
-            <div className="flex justify-between items-start mb-4">
-              <h3 className="text-xl font-bold text-gray-900 font-montserrat">Información del Comprador</h3>
-              <button
-                onClick={() => setIsBuyerModalOpen(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-600 font-montserrat mb-1">
-                  Nombre
-                </label>
-                <p className="text-base font-montserrat text-gray-900">{selectedBuyer.name}</p>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-600 font-montserrat mb-1">
-                  Email
-                </label>
-                <p className="text-base font-montserrat text-gray-900">{selectedBuyer.emai}</p>
-              </div>
-            </div>
-            
-            <div className="mt-6 flex justify-end">
-              <button
-                onClick={() => setIsBuyerModalOpen(false)}
-                className="px-4 py-2 bg-studdeo-violet text-white rounded-lg font-montserrat hover:bg-opacity-90"
-              >
-                Cerrar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

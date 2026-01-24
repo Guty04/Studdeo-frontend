@@ -6,7 +6,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Button } from './ui/button';
 import { Eye, EyeOff } from 'lucide-react';
-import logo from '../assets/Studdeo.png';
+import logo from '../assets/Studdeo_LoginPage.png';
 
 const LoginCard: React.FC = () => {
   const { login } = useAuth();
@@ -143,9 +143,9 @@ const LoginCard: React.FC = () => {
 
   return (
     <Card className="w-full max-w-md mx-auto shadow-lg border-0 bg-white">
-      <CardHeader className="text-center pt-6 pb-4">
-        <div className="mx-auto ml-[6.1rem]">
-          <img src={logo} alt="Studdeo logo and name" className="w-40 h-auto mb-4" />
+      <CardHeader className="text-center pt-0 pb-0">
+        <div className="mx-auto -mb-8">
+          <img src={logo} alt="Studdeo logo and name" className="w-56 h-56 object-contain mx-auto -ml-3" />
         </div>
         <CardDescription className="text-2xl text-studdeo-violet font-montserrat font-bold">
           Bienvenido

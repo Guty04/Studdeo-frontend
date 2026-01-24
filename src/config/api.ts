@@ -12,6 +12,8 @@ export const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://backend-pro
 export const API_ENDPOINTS = {
   auth: {
     login: '/auth/login',
+    requestRestorePassword: '/auth/restore_password',
+    restorePassword: (token: string) => `/auth/restore_password/${token}`,
   },
   profesores: {
     base: '/profesores/',

@@ -64,61 +64,7 @@ const Dashboard: React.FC = () => {
   const isAdmin = user?.role === "administrator";
 
   // Constantes de caché
-  const CACHE_DURATION = 5 * 60 * 1000; // 5 minutos en milisegundos
   const SALES_CACHE_KEY = "dashboard_sales_cache";
-
-  // Función para recalcular el total correcto de una venta
-  const recalculateSaleTotal = (sale: Sale): number => {
-    const subtotal = sale.details_sale.reduce(
-      (sum, detail) => sum + detail.price * detail.quantity,
-      0,
-    );
-    return subtotal + sale.discount; // discount es negativo para descuentos
-  };
-
-  // Función para validar y corregir totales de ventas
-  const validateAndFixSalesData = (
-    courses: CourseWithSales[],
-  ): CourseWithSales[] => {
-    return courses.map((course) => ({
-      ...course,
-      sales: course.sales.map((sale) => {
-        const calculatedTotal = recalculateSaleTotal(sale);
-        // Si el total es incorrecto, usar el calculado
-        if (Math.abs(sale.total - calculatedTotal) > 0.01) {
-          console.warn(
-            `⚠️ Total incorrecto en venta ${sale.external_reference}. Backend: ${sale.total}, Calculado: ${calculatedTotal}`,
-          );
-          return { ...sale, total: calculatedTotal };
-        }
-        return sale;
-      }),
-    }));
-  };
-
-  // Utilidad para obtener datos del caché
-  const getCachedData = <T,>(key: string): T | null => {
-    try {
-      const cached = sessionStorage.getItem(key);
-      if (!cached) return null;
-
-      const { data, timestamp } = JSON.parse(cached);
-      const now = Date.now();
-
-      // Verificar si el caché es válido (no ha expirado)
-      if (now - timestamp < CACHE_DURATION) {
-        console.log(`✅ Usando datos del caché para ${key}`);
-        return data as T;
-      }
-
-      // Caché expirado, eliminar
-      sessionStorage.removeItem(key);
-      return null;
-    } catch (error) {
-      console.error("Error al leer del caché:", error);
-      return null;
-    }
-  };
 
   // Utilidad para guardar datos en el caché
   const setCachedData = <T,>(key: string, data: T): void => {
@@ -139,7 +85,7 @@ const Dashboard: React.FC = () => {
     fetchInitialData();
   }, [isAdmin]);
 
-  const fetchSalesData = async (forceRefresh: boolean = false) => {
+  const fetchSalesData = async () => {
     // SIEMPRE limpiar caché para asegurar datos frescos
     sessionStorage.removeItem(SALES_CACHE_KEY);
     
@@ -156,12 +102,11 @@ const Dashboard: React.FC = () => {
       );
       console.log("Sales data received:", sales);
 
-      // Validar y corregir totales antes de guardar
-      const validatedSales = validateAndFixSalesData(sales || []);
-      setSalesData(validatedSales);
+      // Usar datos directamente del backend (ya están correctos)
+      setSalesData(sales || []);
 
       // Guardar en caché
-      setCachedData(SALES_CACHE_KEY, validatedSales);
+      setCachedData(SALES_CACHE_KEY, sales || []);
     } catch (error) {
       console.error("Error al obtener ventas:", error);
       setSalesData([]);
@@ -493,7 +438,7 @@ const Dashboard: React.FC = () => {
                         <button
                           onClick={() => {
                             sessionStorage.removeItem(SALES_CACHE_KEY);
-                            fetchSalesData(true);
+                            fetchSalesData();
                           }}
                           disabled={isLoadingSales}
                           className="w-full px-4 py-2 bg-gray-600 text-white rounded-md font-montserrat hover:bg-opacity-90 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"

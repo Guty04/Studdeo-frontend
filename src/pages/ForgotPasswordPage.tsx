@@ -6,6 +6,7 @@ import { Label } from '../components/ui/label';
 import { Button } from '../components/ui/button';
 import { ArrowLeft, Mail } from 'lucide-react';
 import logo from '../assets/Studdeo.png';
+import { API_BASE_URL, API_ENDPOINTS } from '../config/api';
 
 const ForgotPasswordPage: React.FC = () => {
   const navigate = useNavigate();
@@ -20,19 +21,25 @@ const ForgotPasswordPage: React.FC = () => {
     setError(null);
     
     try {
-      // TODO: Implementar la llamada al endpoint de recuperación de contraseña
-      // const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ email })
-      // });
+      const response = await fetch(
+        `${API_BASE_URL}${API_ENDPOINTS.auth.requestRestorePassword}?email=${encodeURIComponent(email)}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
       
-      // Simulación temporal
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        if (response.status === 422) {
+          throw new Error(errorData?.detail?.[0]?.msg || 'Email inválido');
+        }
+        throw new Error(errorData?.detail || 'Error al enviar el correo');
+      }
       
       setSuccess(true);
-    } catch {
-      setError('Error al enviar el correo de recuperación. Por favor intenta nuevamente.');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al enviar el correo de recuperación. Por favor intenta nuevamente.');
     } finally {
       setIsLoading(false);
     }

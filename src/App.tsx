@@ -6,6 +6,7 @@ import SalesPage from './pages/SalesPage';
 import CoursesPage from './pages/CoursesPage';
 import CourseDetailPage from './pages/CourseDetailPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 import TermsPage from './pages/TermsPage';
 import PrivacyPage from './pages/PrivacyPage';
 import SupportPage from './pages/SupportPage';
@@ -19,6 +20,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
         <Route path="/terminos" element={<TermsPage />} />
         <Route path="/privacidad" element={<PrivacyPage />} />
         <Route path="/soporte" element={<SupportPage />} />

@@ -122,6 +122,9 @@ const SalesPage: React.FC = () => {
     setIsLoading(true);
     setError(null);
     
+    // SIEMPRE limpiar caché para asegurar datos frescos
+    sessionStorage.removeItem(SALES_CACHE_KEY);
+    
     try {
       // Intentar obtener datos del cache si no es refresh forzado
       if (!forceRefresh) {

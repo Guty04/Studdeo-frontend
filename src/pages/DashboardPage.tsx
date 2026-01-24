@@ -140,15 +140,9 @@ const Dashboard: React.FC = () => {
   }, [isAdmin]);
 
   const fetchSalesData = async (forceRefresh: boolean = false) => {
-    // Intentar obtener del caché si no es refresh forzado
-    if (!forceRefresh) {
-      const cachedSales = getCachedData<CourseWithSales[]>(SALES_CACHE_KEY);
-      if (cachedSales) {
-        setSalesData(cachedSales);
-        return;
-      }
-    }
-
+    // SIEMPRE limpiar caché para asegurar datos frescos
+    sessionStorage.removeItem(SALES_CACHE_KEY);
+    
     setIsLoadingSales(true);
     try {
       console.log("🌐 Obteniendo datos de ventas del backend...");
